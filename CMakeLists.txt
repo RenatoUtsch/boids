@@ -44,6 +44,9 @@ if( UNIX )
         "${BOIDS_DEFINITIONS} -Wall -Wextra -Werror -Wno-deprecated-declarations -Wno-unused-parameter -Wno-comment -g -pg" )
 endif()
 
+# Add catch for unit testing.
+set( BOIDS_INCLUDE_DIRS ${BOIDS_INCLUDE_DIRS} "${BOIDS_SOURCE_DIR}/3rdparty/catch/include" )
+
 # Find PKGCONFIG for GLFW.
 find_package( PkgConfig )
 if( NOT PkgConfig_FOUND )

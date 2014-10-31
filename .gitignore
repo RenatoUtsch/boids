@@ -30,3 +30,6 @@
 # Temp files
 *~
 ~*
+
+# OS X files
+.DS_Store
