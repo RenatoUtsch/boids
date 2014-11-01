@@ -2,7 +2,7 @@
  * Math library intended for computer graphics, animation, physics and games
  * (but not restricted to it).
  *
- * Copyright (c) 2014 Renato Utsch
+ * Copyright (c) 2014 Renato Utsch <renatoutsch@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal

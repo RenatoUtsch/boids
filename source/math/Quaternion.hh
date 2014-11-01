@@ -2,7 +2,7 @@
  * Math library intended for computer graphics, animation, physics and games
  * (but not restricted to it).
  *
- * Copyright (c) 2014 Renato Utsch
+ * Copyright (c) 2014 Renato Utsch <renatoutsch@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -80,14 +80,21 @@ public:
     }
 
     /**
+     * Returns the conjugate of the quaternion.
+     **/
+    inline Quaternion conjugate() {
+        return Quaternion(this->w,
+                -this->v.x,
+                -this->v.y,
+                -this->v.z);
+    }
+
+    /**
      * Replaces the data of the given matrix with rotation data and returns it.
      * Throws length_error in case the matrix isn't 4x4.
      * @param matrix The matrix to replace the data.
      **/
     inline void toMatrix(Matrix4D &matrix) {
-        if(matrix.numColumns() != 4 && matrix.numLines() != 4)
-            throw std::length_error("Invalid matrix size (expected 4x4)");
-
         float ww = this->w * this->w,
             xx = this->v.x * this->v.x,
             yy = this->v.y * this->v.y,
@@ -156,6 +163,55 @@ public:
                 + (this->v.x * right.v.y) - (this->v.y * right.v.x));
         *this = res;
         return *this;
+    }
+
+    /**
+     * Dot product between two quaternions.
+     * @param q1 The first quaternion to do the dot product.
+     * @param q2 The second quaternion of the dot product.
+     * @return The dot product between q1 and q2.
+     **/
+    static inline float dot(const Quaternion &q1, const Quaternion &q2) {
+        return q1.w * q2.w + q1.v.x * q2.v.x + q1.v.y * q2.v.y
+            + q1.v.z * q2.v.z;
+    }
+
+    /**
+     * Spherical Linear intERPolation between unit quaternions q1 and q2
+     * with interpolation parameter t.
+     **/
+    static inline Quaternion slerp(const Quaternion &q1, Quaternion q2,
+            float t) {
+        float theta, mult1, mult2;
+
+        // Reverse the sign of q2 if q1.q2 < 0.
+        if(dot(q1, q2) < 0.0) {
+            q2.w = -q2.w;
+            q2.v.x = -q2.v.x;
+            q2.v.y = -q2.v.y;
+            q2.v.z = -q2.v.z;
+        }
+
+        theta = acos(dot(q1, q2));
+
+        // To avoid division by 0 and by very small numbers, the approximation
+        // of sin(angle) by angle is used when theta is mall (0.000001 is chosen
+        // arbitrarily).
+        if(theta > 0.000001) {
+            float sinTheta = sin(theta);
+            mult1 = sin((1 - t) * theta) / sinTheta;
+            mult2 = sin(t * theta) / sinTheta;
+        }
+        else {
+            mult1 = 1 - t;
+            mult2 = t;
+        }
+
+        // Create and return the slerp quaternion.
+        return Quaternion(mult1 * q1.w + mult2 * q2.w,
+                mult1 * q1.v.x + mult2 * q2.v.x,
+                mult1 * q1.v.y + mult2 * q2.v.y,
+                mult1 * q1.v.z + mult2 * q2.v.z);
     }
 };
 
