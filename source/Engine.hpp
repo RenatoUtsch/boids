@@ -28,7 +28,6 @@
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
 
-#include "util/noncopyable.hpp"
 #include "state/State.hpp"
 #include "state/StateManager.hpp"
 #include "glfw.hpp"
