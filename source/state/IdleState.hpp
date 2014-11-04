@@ -40,17 +40,23 @@
 class IdleState : public State {
 
 public:
+    ~IdleState() { }
+
+    StateId getId() {
+        return IdleStateId;
+    }
+
     void load() { }
     void init() { }
 
     void input() {
-        // Just wait for events. Because of that the OS won't kill off this
-        // program.
-        glfwWaitEvents();
+        // Poll events to prevent the OS from killing off our program for
+        // unresponsiveness.
+        glfwPollEvents();
     }
 
     void update(float dt) { }
-    void render() { }
+    void render(float alpha) { }
     void cleanUp() { }
     void unload() { }
 

@@ -30,6 +30,7 @@
 
 #include "util/noncopyable.hpp"
 #include "state/State.hpp"
+#include "state/StateManager.hpp"
 #include "glfw.hpp"
 
 /**
@@ -43,8 +44,8 @@ class Engine {
     /// The window of the engine.
     GLFWwindow *_window;
 
-    /// The current state of the engine.
-    State *_currentState;
+    /// The elapsed time since the mainLoop began, in seconds.
+    double _elapsedTime;
 
     /// Inits the window system.
     void initWindowSystem();
@@ -107,10 +108,17 @@ public:
     void windowSizeEvent(GLFWwindow *window, int width, int height);
 
     /**
-     * Returns the current state of this engine.
+     * Returns the elapsed time since the mainLoop started, in seconds.
      **/
-    inline State &getCurrentState() {
-        return *_currentState;
+    inline double getElapsedTime() {
+        return _elapsedTime;
+    }
+
+    /**
+     * Returns the state manager of the engine.
+     **/
+    inline StateManager &getStateManager() {
+        return StateManager::getInstance();
     }
 
     /**

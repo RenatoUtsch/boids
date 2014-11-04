@@ -25,26 +25,23 @@
  * THE SOFTWARE.
  */
 
-#ifndef DEFS_HPP
-#define DEFS_HPP
+#include "StateFactory.hpp"
+#include "State.hpp"
+#include "IdleState.hpp"
 
-/**
- * Definition of the constants used in the software and of the global variables.
- **/
-
-/// Initial window width.
-const int InitialWindowWidth = 640;
-
-/// Initial window height.
-const int InitialWindowHeight = 480;
-
-/// Initial x position of the window.
-const int InitialWindowPosX = 100;
-
-/// Initial y position of the window.
-const int InitialWindowPosY = 100;
-
-/// Maximum number of frames per second the game will run at.
-const int MaxFps = 60;
-
-#endif // !DEFS_HPP
+State *stateFactory(StateId id) {
+    // Go through each StateId and create the object related to it.
+    switch(id) {
+        case IdleStateId:
+            return new IdleState;
+        case RunStateId:
+            return NULL;
+            //return new RunState;
+        case PauseStateId:
+            return NULL;
+            //return new PauseState;
+        case DebugStateId:
+            return NULL;
+            //return new DebugState;
+    }
+}

@@ -33,6 +33,31 @@ struct GLFWwindow;
 class Engine;
 
 /**
+ * Each state has an ID that is represented here.
+ **/
+enum StateId {
+    /**
+     * Idle state that does nothing, except listening to GLFW's close event.
+     **/
+    IdleStateId = 0,
+
+    /**
+     * Running state. Normal state of the engine.
+     **/
+    RunStateId,
+
+    /**
+     * Paused state. Does nothing until the state is restored to another state.
+     **/
+    PauseStateId,
+
+    /**
+     * Debug state. Goes step by step.
+     **/
+    DebugStateId
+};
+
+/**
  * Each implementation of the State class stores the functions related to
  * a state of execution. This class must be derived and each derived class will
  * implement a state.
@@ -40,6 +65,14 @@ class Engine;
 class State {
 
 public:
+    /// Virtual destructor.
+    virtual ~State() { }
+
+    /**
+     * Returns the ID of the current state.
+     **/
+    virtual StateId getId() = 0;
+
     /**
      * The load function will be responsible for loading the state's necessary
      * data. It will be called only once, when starting the state, but never
@@ -59,8 +92,10 @@ public:
 
     /**
      * The input function processes input.
-     * This function should call glfwPollEvents() or glfwWaitEvents() to handle
-     * events received by the operating system.
+     * This function should call glfwPollEvents() to handle events received by
+     * the operating system.
+     * This function must be non-blocking, so it must NEVER call
+     * glfwWaitEvents().
      **/
     virtual void input() = 0;
 
@@ -73,8 +108,10 @@ public:
 
     /**
      * The render function renders the current game state to the screen.
+     * @param dt The time we are after the last physics update to display the
+     * physics-affected objects at the right position.
      **/
-    virtual void render() = 0;
+    virtual void render(float dt) = 0;
 
     /**
      * The cleanUp function frees any objects no longer required and sets the

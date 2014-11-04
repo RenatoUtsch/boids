@@ -66,46 +66,56 @@ void Engine::terminateWindowSystem() {
 }
 
 void Engine::mainLoop() {
-    const double fpsTime = 1000 / Fps;
-    double sleepTime;
-    double t1, t2;
+    const double fpsTime = 100 / MaxFps; // Minimum time of a frame.
+    const double dt = 0.01; // Number of ms per update.
+    double accumulator = 0.0;
+    double current, after, sleep;
+    double previous = glfwGetTime();
+    _elapsedTime = 0.0; // Global elapsed time.
 
     // Run the game until a close event is issued.
     while(!glfwWindowShouldClose(_window)) {
+        current = glfwGetTime();
+        accumulator += current - previous;
+        previous = current;
+
+        // Clamp the accumulator if it is too big to avoid the spiral of death.
+        if(accumulator > 0.25)
+            accumulator = 0.25;
+
         // Get input.
-        getCurrentState().input();
+        getStateManager().getCurrentState().input();
 
-        t1 = glfwGetTime();
-
-        // Update the state.
-        getCurrentState().update(fpsTime);
+        // Update the game simulation.
+        while(accumulator >= dt) {
+            getStateManager().getCurrentState().update(dt);
+            _elapsedTime += dt;
+            accumulator -= dt;
+        }
 
         // Render.
-        getCurrentState().render();
-
-        t2 = glfwGetTime();
+        getStateManager().getCurrentState().render(accumulator);
 
         // Get the sleep time.
-        sleepTime = fpsTime - (t2 - t1);
+        after = glfwGetTime();
+        sleep = fpsTime - (after - current);
 
-        // Sleep for the rest of the frame.
-        if(sleepTime > 0.0)
-            util::sleep(sleepTime);
+        // Sleep for the rest of the frame to clamp at MaxFps.
+        if(sleep > 0.0)
+            util::sleep(sleep);
         else
             std::cerr << "Can't keep up!" << std::endl;
     }
 }
 
-
 Engine::Engine()
-        : _window(0), _currentState(new IdleState) {
+        : _window(0) {
     // Load everything that is needed.
 
 }
 
 Engine::~Engine() {
     // Unload everything that is needed.
-
 
 }
 

@@ -55,7 +55,8 @@ inline void windowSizeCallback(GLFWwindow *window, int width, int height) {
  **/
 inline void keyCallback(GLFWwindow *window, int key, int scancode, int action,
         int mods) {
-    getEngine().getCurrentState().keyEvent(window, key, scancode, action, mods);
+    getEngine().getStateManager().getCurrentState().keyEvent(window, key,
+            scancode, action, mods);
 }
 
 /**
@@ -63,7 +64,8 @@ inline void keyCallback(GLFWwindow *window, int key, int scancode, int action,
  * state's cursor position event.
  **/
 inline void cursorPosCallback(GLFWwindow *window, double xpos, double ypos) {
-    getEngine().getCurrentState().cursorPosEvent(window, xpos, ypos);
+    getEngine().getStateManager().getCurrentState().cursorPosEvent(window, xpos,
+            ypos);
 }
 
 /**
@@ -72,7 +74,8 @@ inline void cursorPosCallback(GLFWwindow *window, double xpos, double ypos) {
  **/
 inline void mouseButtonCallback(GLFWwindow *window, int button, int action,
         int mods) {
-    getEngine().getCurrentState().mouseButtonEvent(window, button, action, mods);
+    getEngine().getStateManager().getCurrentState().mouseButtonEvent(window,
+            button, action, mods);
 }
 
 #endif // !CALBACKS_HPP
