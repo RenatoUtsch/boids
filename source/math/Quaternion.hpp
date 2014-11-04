@@ -23,14 +23,14 @@
  * THE SOFTWARE.
  */
 
-#ifndef MATH_QUATERNION_HH
-#define MATH_QUATERNION_HH
+#ifndef MATH_QUATERNION_HPP
+#define MATH_QUATERNION_HPP
 
 #include <iostream>
 #include <stdexcept>
-#include "math.hh"
-#include "Matrix4D.hh"
-#include "Vector.hh"
+#include "math.hpp"
+#include "Matrix4d.hpp"
+#include "Vector.hpp"
 
 /**
  * A quaternion of the form (w + xi + yj + zk) implementation.
@@ -94,7 +94,7 @@ public:
      * Throws length_error in case the matrix isn't 4x4.
      * @param matrix The matrix to replace the data.
      **/
-    inline void toMatrix(Matrix4D &matrix) {
+    inline void toMatrix(Matrix4d &matrix) {
         float ww = this->w * this->w,
             xx = this->v.x * this->v.x,
             yy = this->v.y * this->v.y,
@@ -127,8 +127,8 @@ public:
     /**
      * Converts a quaternion to a rotation matrix and returns it.
      **/
-    inline Matrix4D toMatrix() {
-        Matrix4D ret;
+    inline Matrix4d toMatrix() {
+        Matrix4d ret;
         this->toMatrix(ret);
         return ret;
     }
@@ -257,4 +257,4 @@ inline std::ostream &operator<<(std::ostream &os, const Quaternion &obj) {
     return os;
 }
 
-#endif // !MATH_QUATERNION_HH
+#endif // !MATH_QUATERNION_HPP

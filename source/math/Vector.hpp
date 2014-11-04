@@ -23,11 +23,11 @@
  * THE SOFTWARE.
  */
 
-#ifndef MATH_VECTOR_HH
-#define MATH_VECTOR_HH
+#ifndef MATH_VECTOR_HPP
+#define MATH_VECTOR_HPP
 
 #include <iostream>
-#include "math.hh"
+#include "math.hpp"
 
 /**
  * An implementation of a Vector (as in linear algebra).
@@ -218,4 +218,4 @@ inline std::ostream &operator<<(std::ostream &os, const Vector &obj) {
     return os;
 }
 
-#endif // !MATH_VECTOR_HH
+#endif // !MATH_VECTOR_HPP

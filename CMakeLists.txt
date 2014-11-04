@@ -74,7 +74,9 @@ if( COMPILE_GLFW OR NOT GLFW_FOUND )
 endif()
 
 # Boids sources
-set( BOIDS_SOURCE_FILES "${BOIDS_SOURCE_DIR}/source/engine.cc" )
+set( BOIDS_SOURCE_FILES "${BOIDS_SOURCE_DIR}/source/Engine.cpp"
+                        "${BOIDS_SOURCE_DIR}/source/main.cpp"
+                        "${BOIDS_SOURCE_DIR}/source/util/sleep.cpp" )
 
 # Compile
 add_definitions( ${BOIDS_DEFINITIONS} )

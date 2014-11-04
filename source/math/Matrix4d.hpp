@@ -23,29 +23,29 @@
  * THE SOFTWARE.
  */
 
-#ifndef MATH_MATRIX4D_HH
-#define MATH_MATRIX4D_HH
+#ifndef MATH_MATRIX4D_HPP
+#define MATH_MATRIX4D_HPP
 
-#include <GLFW/glfw3.h>
+#include "../glfw.hpp"
 #include <cstring>
 #include <new>
 #include <stdexcept>
 #include <string>
 
-class Matrix4D;
+class Matrix4d;
 
 namespace glext {
     /**
      * Multiply the current OpenGL matrix by the given matrix.
      * @param matrix the (m)atrix to use.
      **/
-    inline void glMultMatrixm(const Matrix4D &matrix);
+    inline void glMultMatrixm(const Matrix4d &matrix);
 }
 
 /**
  * Represents a 4x4 matrix to be used with OpenGL.
  **/
-class Matrix4D {
+class Matrix4d {
 public:
     /// The number of lines of the matrix.
     static const int numLines = 4;
@@ -116,14 +116,14 @@ public:
     }
 
     /// Friend function to multiply the current OpenGL matrix by this one.
-    friend inline void glext::glMultMatrixm(const Matrix4D &matrix);
+    friend inline void glext::glMultMatrixm(const Matrix4d &matrix);
 };
 
 namespace glext {
-    inline void glMultMatrixm(const Matrix4D &matrix) {
+    inline void glMultMatrixm(const Matrix4d &matrix) {
         glMultMatrixf(matrix._data);
     }
 }
 
 
-#endif // !MATH_MATRIX4D_HH
+#endif // !MATH_MATRIX4D_HPP

@@ -25,21 +25,22 @@
  * THE SOFTWARE.
  */
 
-#ifndef ENGINE_HH
-#define ENGINE_HH
-
-#include <GLFW/glfw3.h>
+#ifndef UTIL_NONCOPYABLE_HPP
+#define UTIL_NONCOPYABLE_HPP
 
 /**
- * This class represents the main engine of the game. There must only be one
- * of these in the entire program, or you'll only see shitloads of bugs.
+ * Any class that inherits noncopyable can't be copied unless you explicitly
+ * implement the copy assignment operator and the copy constructor operator.
  **/
-class Engine {
-    /// The window of the game.
-    Window _window;
+class noncopyable {
 
-public:
+protected:
+    noncopyable() { }
+    ~noncopyable() { }
 
+private: // Emphasize that the following members are private.
+    noncopyable(const noncopyable &);
+    noncopyable &operator=(const noncopyable &);
 };
 
-#endif // !ENGINE_HH
+#endif // !UTIL_NONCOPYABLE_HPP

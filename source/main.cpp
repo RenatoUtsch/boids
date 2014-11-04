@@ -25,29 +25,9 @@
  * THE SOFTWARE.
  */
 
-#ifndef WINDOW_HH
-#define WINDOW_HH
+#include "Engine.hpp"
 
-#include <GLFW/glfw3.h>
-
-/**
- * Each instance of this class represents a created window in the game.
- **/
-class Window {
-    /// The GLFW window.
-    GLFWwindow *_window;
-
-    /// The width of the window.
-    int width;
-
-    /// The height of the window.
-    int height;
-
-public:
-    /**
-     * Creates a window given its width and height.
-     **/
-    Window(int width, int height);
-};
-
-#endif // !WINDOW_HH
+int main() {
+    // Gives control to the engine.
+    return getEngine().run();
+}

@@ -1,6 +1,8 @@
 /*
- * Math library intended for computer graphics, animation, physics and games
- * (but not restricted to it).
+ * Author: Renato Utsch Gonçalves
+ * Computer Science, UFMG
+ * Computer Graphics
+ * Practical exercise 1 - Boids
  *
  * Copyright (c) 2014 Renato Utsch <renatoutsch@gmail.com>
  *
@@ -23,20 +25,16 @@
  * THE SOFTWARE.
  */
 
-#ifndef MATH_MATH_HH
-#define MATH_MATH_HH
+#ifndef UTIL_SLEEP_HPP
+#define UTIL_SLEEP_HPP
 
-/**
- * Proper inclusion of the standard math library and definition of additional
- * types in case they are missing.
- * Please use this header instead of including <cmath>.
- **/
+/// Utility functions.
+namespace util {
+    /**
+     * Sleeps.
+     * @param ms The number of milliseconds to sleep.
+     **/
+    void sleep(unsigned long ms);
+}
 
-#include <cmath>
-
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif // !M_PI
-
-
-#endif // !MATH_MATH_HH
+#endif // !UTIL_SLEEP_HPP

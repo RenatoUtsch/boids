@@ -23,12 +23,12 @@
  * THE SOFTWARE.
  */
 
-#ifndef MATH_EULER_ANGLES_HH
-#define MATH_EULER_ANGLES_HH
+#ifndef MATH_EULER_ANGLES_HPP
+#define MATH_EULER_ANGLES_HPP
 
-#include <GLFW/glfw3.h>
-#include "math.hh"
-#include "Quaternion.hh"
+#include "../glfw.hpp"
+#include "math.hpp"
+#include "Quaternion.hpp"
 
 /**
  * Implementation of euler angles to represent the orientation of an object.
@@ -136,4 +136,4 @@ namespace glext {
     }
 }
 
-#endif // !MATH_EULER_ANGLES_HH
+#endif // !MATH_EULER_ANGLES_HPP

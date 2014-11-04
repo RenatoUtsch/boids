@@ -23,11 +23,11 @@
  * THE SOFTWARE.
  */
 
-#ifndef MATH_POINT_HH
-#define MATH_POINT_HH
+#ifndef MATH_POINT_HPP
+#define MATH_POINT_HPP
 
-#include <GLFW/glfw3.h>
-#include "Vector.hh"
+#include "../glfw.hpp"
+#include "Vector.hpp"
 
 /**
  * An implementation of a Point (as in linear algebra).
@@ -134,4 +134,4 @@ namespace glext {
     }
 }
 
-#endif // !MATH_POINT_HH
+#endif // !MATH_POINT_HPP
