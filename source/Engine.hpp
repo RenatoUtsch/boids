@@ -100,12 +100,20 @@ public:
     void errorEvent(int error, const char *description);
 
     /**
-     * Window resize event. Called after the window was resized.
+     * Framebuffer resize event. Called after a window resize.
+     * This function sets up the OpenGL projection again for the given window
+     * to match the new framebuffer size.
+     * The framebuffer size is is the size of the window in pixels, not in screen
+     * coordinates. OpenGL expects the size in pixels, and, while the screen
+     * coordinates and pixels are the same in some platforms, they differ in
+     * others (i.e. Macs with Retina Display).
+     * Because of that, we listen to changes in the framebuffer, and not to
+     * changes in the window.
      * @param window The window that was resized.
-     * @param width The new width of the window.
-     * @param height The new height of the window.
+     * @param width The new width of the framebuffer.
+     * @param height The new height of the framebuffer.
      **/
-    void windowSizeEvent(GLFWwindow *window, int width, int height);
+    void framebufferSizeEvent(GLFWwindow *window, int width, int height);
 
     /**
      * Returns the elapsed time since the mainLoop started, in seconds.

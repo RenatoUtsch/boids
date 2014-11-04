@@ -43,11 +43,11 @@ inline void errorCallback(int error, const char *description) {
 }
 
 /**
- * Callback for window resize events from glfw. Calls the engine's
- * windowSizeEvent.
+ * Callback for framebuffer (window) resize events from glfw. Calls the
+ * engine's framebufferSizeEvent.
  **/
-inline void windowSizeCallback(GLFWwindow *window, int width, int height) {
-    getEngine().windowSizeEvent(window, width, height);
+inline void framebufferSizeCallback(GLFWwindow *window, int width, int height) {
+    getEngine().framebufferSizeEvent(window, width, height);
 }
 
 /**

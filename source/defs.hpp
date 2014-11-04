@@ -44,6 +44,19 @@ const int InitialWindowPosX = 100;
 /// Initial y position of the window.
 const int InitialWindowPosY = 100;
 
+/// Field of view (in degrees) of the viewing frustum.
+const int FrustumFieldOfView = 90;
+
+/// Nearest z value of the viewing frustum. Please note that OpenGL uses
+/// the near value as -near. Because of that, a near of 1.0, for example,  will
+/// actually be the z value of -1.0 in the 3D space.
+const float FrustumNear = 1.0;
+
+/// Farthest z value of the viewing frustum. Please note that OpenGL uses
+/// the far value as -far. Because of that, a far of 100.0, for example, will
+/// actually be the z value of -100.0 in the 3D space.
+const float FrustumFar = 100.0;
+
 /// Maximum number of frames per second the game will run at.
 const int MaxFps = 60;
 

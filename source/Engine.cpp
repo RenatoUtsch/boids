@@ -54,10 +54,17 @@ void Engine::initWindowSystem() {
 
     // Set up the callbacks.
     glfwSetErrorCallback(errorCallback);
-    glfwSetWindowSizeCallback(_window, windowSizeCallback);
+    glfwSetFramebufferSizeCallback(_window, framebufferSizeCallback);
     glfwSetKeyCallback(_window, keyCallback);
     glfwSetCursorPosCallback(_window, cursorPosCallback);
     glfwSetMouseButtonCallback(_window, mouseButtonCallback);
+
+    // Get the framebuffer size.
+    int width, height;
+    glfwGetFramebufferSize(_window, &width, &height);
+
+    // Set up the OpenGL projection by (supposedly) emitting a GLFW event.
+    framebufferSizeEvent(_window, width, height);
 }
 
 void Engine::terminateWindowSystem() {
@@ -138,6 +145,11 @@ void Engine::errorEvent(int error, const char *description) {
     std::exit(error);
 }
 
-void Engine::windowSizeEvent(GLFWwindow *window, int width, int height) {
-
+void Engine::framebufferSizeEvent(GLFWwindow *window, int width, int height) {
+    // Set up the OpenGL projection.
+    glViewport(0, 0, width, height);
+    glMatrixMode(GL_PROJECTION);
+    gluPerspective(FrustumFieldOfView, (GLfloat) width / height, FrustumNear,
+            FrustumFar);
+    glMatrixMode(GL_MODELVIEW);
 }
