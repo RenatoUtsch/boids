@@ -22,29 +22,25 @@
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * THE SOFOTWARE.
  */
 
-#ifndef SYSTEM_SYSTEM_HPP
-#define SYSTEM_SYSTEM_HPP
+#include "objects.hpp"
+#include "GameObject.hpp"
+#include "glfw.hpp"
 
-/**
- * This class represents a system of the engine.
- * There must be only one instance of each system in the engine, but I am lazy
- * and I won't make this a singleton.
- **/
-class System {
+GameObject *createBoid() {
+    GameObject *boid = new GameObject;
+}
 
-public:
-    /// Virtual destructor.
-    virtual ~System() { }
+GameObject *createSphereObstacle(float radius) {
+    GameObject *sphere = new GameObject;
+    return sphere;
+}
 
-    /**
-     * Updates the state of the components managed by this system.
-     * @param dt How much time to update.
-     **/
-    void update(float dt);
-};
+GameObject *createConeObstacle(float radius, float height) {
+    GameObject *cone = new GameObject;
 
 
-#endif // !SYSTEM_SYSTEM_HPP
+    return cone;
+}

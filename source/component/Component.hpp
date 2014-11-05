@@ -28,7 +28,11 @@
 #ifndef COMPONENT_COMPONENT_HPP
 #define COMPONENT_COMPONENT_HPP
 
+#include <stdexcept>
+#include <string>
 #include "component/componentIds.hpp"
+
+class GameObject;
 
 /**
  * GameObjects are buckets of data. The data that the GameObjects hold are
@@ -71,8 +75,21 @@
  * GameObject-Component system.
  **/
 class Component {
+    /// The game object that owns this component.
+    GameObject *_gameObject;
 
 public:
+    /**
+     * Constructor.
+     * @param gameObject The game object that will own this component.
+     **/
+    Component(GameObject *gameObject) : _gameObject(gameObject) {
+
+    }
+
+    /// Virtual destructor.
+    virtual ~Component() { }
+
     /**
      * Returns the ID of this component.
      * You MUST NOT implement this function when inheriting this class and
@@ -81,6 +98,13 @@ public:
      * for you.
      **/
     virtual ComponentId id() = 0;
+
+    /**
+     * Returns the game object of this component.
+     **/
+    inline GameObject *getGameObject() {
+        return _gameObject;
+    }
 };
 
 /**
@@ -89,7 +113,18 @@ public:
  * It adds the Id static variable to the class and implements the id() function.
  * @param ComponentName the name of the component's class.
  **/
-#define COMPONENT_CLASS(ComponentName) static const ComponentId Id = ComponentName##Id; \
-                                        virtual ComponentId id() { return Id; }
+#define COMPONENT_CLASS(ComponentName) public: \
+        static const ComponentId Id = ComponentName##Id; \
+        virtual ComponentId id() { return Id; } \
+        private:
+
+/**
+ * Exception for component types.
+ **/
+class ComponentError : public std::runtime_error {
+
+public:
+    ComponentError(const std::string &what) : std::runtime_error(what) { }
+};
 
 #endif // !COMPONENT_COMPONENT_HPP

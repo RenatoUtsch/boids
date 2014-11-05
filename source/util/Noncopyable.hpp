@@ -25,26 +25,21 @@
  * THE SOFTWARE.
  */
 
-#ifndef SYSTEM_SYSTEM_HPP
-#define SYSTEM_SYSTEM_HPP
+#ifndef UTIL_NONCOPYABLE_HPP
+#define UTIL_NONCOPYABLE_HPP
 
 /**
- * This class represents a system of the engine.
- * There must be only one instance of each system in the engine, but I am lazy
- * and I won't make this a singleton.
+ * Every class that inherits this one will be noncopyable.
  **/
-class System {
+class Noncopyable {
 
-public:
-    /// Virtual destructor.
-    virtual ~System() { }
+protected:
+    Noncopyable() { }
+    ~Noncopyable() { }
 
-    /**
-     * Updates the state of the components managed by this system.
-     * @param dt How much time to update.
-     **/
-    void update(float dt);
+private: // Emphasize the following members are private.
+    Noncopyable(const Noncopyable &);               // Don't implement.
+    Noncopyable &operator=(const Noncopyable &);    // Don't implement.
 };
 
-
-#endif // !SYSTEM_SYSTEM_HPP
+#endif // !UTIL_NONCOPYABLE_HPP

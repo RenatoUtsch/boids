@@ -60,4 +60,10 @@ const float FrustumFar = 100.0;
 /// Maximum number of frames per second the game will run at.
 const int MaxFps = 60;
 
+/// Minimum height the boids can get.
+const float MinimumHeight = 10.0;
+
+/// Maximum height the boids can get.
+const float MaximumHeight = 1000.0;
+
 #endif // !DEFS_HPP

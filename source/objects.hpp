@@ -25,26 +25,36 @@
  * THE SOFTWARE.
  */
 
-#ifndef SYSTEM_SYSTEM_HPP
-#define SYSTEM_SYSTEM_HPP
+#ifndef OBJECTS_HPP
+#define OBJECTS_HPP
+
+/*
+ * This class manages the creation of game objects.
+ */
+
+class GameObject;
 
 /**
- * This class represents a system of the engine.
- * There must be only one instance of each system in the engine, but I am lazy
- * and I won't make this a singleton.
+ * This function dynamically creates a boid and returns it.
+ * You MUST deallocate it after using.
  **/
-class System {
+GameObject *createBoid();
 
-public:
-    /// Virtual destructor.
-    virtual ~System() { }
+/**
+ * This function dynamically creates a sphere obstacle centered at (0, 0, 0) and
+ * returns it.
+ * You MUST deallocate it after using.
+ * @param radius The radius of the sphere.
+ **/
+GameObject *createSphereObstacle(float radius);
 
-    /**
-     * Updates the state of the components managed by this system.
-     * @param dt How much time to update.
-     **/
-    void update(float dt);
-};
+/**
+ * This function dynamically creates a cone obstacle with its base centered at
+ * (0, 0, 0) and returns it.
+ * You MUST deallocate it after using.
+ * @param radius The radius of the base of the cone.
+ * @param height The height of the cone.
+ **/
+GameObject *createConeObstacle(float radius, float height);
 
-
-#endif // !SYSTEM_SYSTEM_HPP
+#endif // !OBJECTS_HPP

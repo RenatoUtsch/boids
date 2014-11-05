@@ -31,12 +31,15 @@
 #include <map>
 #include "component/Component.hpp"
 #include "component/componentIds.hpp"
+#include "util/Noncopyable.hpp"
 
 /**
  * A GameObject.
  * Each GameObject has its functionality defined by its components.
+ * This class is noncopyable because I am lazy.
+ * TODO: make this class copyable.
  **/
-class GameObject {
+class GameObject : public Noncopyable  {
     /// Type of the map of components.
     typedef std::map<ComponentId, Component *> ComponentMap;
 
@@ -56,6 +59,16 @@ class GameObject {
     ComponentMap _components;
 
 public:
+    /// Destructor.
+    ~GameObject() {
+        // Destroy all the elements of the _components map.
+        for(ComponentMap::iterator it = _components.begin();
+                it != _components.end(); ++it) {
+            delete it->second;
+            it->second = 0;
+        }
+    }
+
     /**
      * Returns the component with the type specified as the template parameter.
      * @throws ComponentError in case the game object doesn't have the
@@ -75,13 +88,14 @@ public:
     /**
      * Makes the component given as first parameter a component of this class.
      * @param component The component to add to this object.
-     * @throws ComponentError in case a component with the same ID already
-     * exists in this object or if the component already has an owner.
+     * @throw ComponentError if the component has a different owner.
+     * @throw ComponentError if a component of the same type already exists in
+     * this GameObject.
      **/
     void addComponent(Component &component) {
         // If the component has an owner, throw an exception.
-        if(component.hasGameObject())
-            throw ComponentError("Component already has an owner GameObject");
+        if(component.getGameObject() != this)
+            throw ComponentError("Component has a different GameObject owner");
 
         // Tries to find a component with the same ID.
         ComponentMap::iterator it = _components.find(component.id());
@@ -91,8 +105,7 @@ public:
         if(it != _components.end())
             throw ComponentError("A component of the same type already exists");
         else {
-            component.setGameObject(*this);
-            _components.insert(ComponentPair(component.id(), component));
+            _components.insert(ComponentPair(component.id(), &component));
         }
     }
 

@@ -25,26 +25,16 @@
  * THE SOFTWARE.
  */
 
-#ifndef SYSTEM_SYSTEM_HPP
-#define SYSTEM_SYSTEM_HPP
+#ifndef COMPONENT_ANIMATION_COMPONENT_HPP
+#define COMPONENT_ANIMATION_COMPONENT_HPP
 
-/**
- * This class represents a system of the engine.
- * There must be only one instance of each system in the engine, but I am lazy
- * and I won't make this a singleton.
- **/
-class System {
+#include "Component.hpp"
+
+class AnimationComponent : public Component {
+    COMPONENT_CLASS(AnimationComponent)
 
 public:
-    /// Virtual destructor.
-    virtual ~System() { }
 
-    /**
-     * Updates the state of the components managed by this system.
-     * @param dt How much time to update.
-     **/
-    void update(float dt);
 };
 
-
-#endif // !SYSTEM_SYSTEM_HPP
+#endif // !COMPONENT_ANIMATION_COMPONENT_HPP

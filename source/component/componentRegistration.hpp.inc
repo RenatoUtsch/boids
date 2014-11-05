@@ -30,7 +30,7 @@
  * macro (and without semicolons).
  */
 
-REGISTER_COMPONENT(AiComponent)
 REGISTER_COMPONENT(AnimationComponent)
-REGISTER_COMPONENT(PhysicsComponent)
+REGISTER_COMPONENT(CollisionComponent)
+REGISTER_COMPONENT(MovementComponent)
 REGISTER_COMPONENT(RenderComponent)

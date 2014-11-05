@@ -30,6 +30,11 @@
 
 #include "state/State.hpp"
 #include "state/StateManager.hpp"
+#include "system/System.hpp"
+#include "system/AnimationSystem.hpp"
+#include "system/CollisionSystem.hpp"
+#include "system/MovementSystem.hpp"
+#include "system/RenderSystem.hpp"
 #include "glfw.hpp"
 
 /**
@@ -45,6 +50,18 @@ class Engine {
 
     /// The elapsed time since the mainLoop began, in seconds.
     double _elapsedTime;
+
+    /// Animation system.
+    AnimationSystem _animationSystem;
+
+    /// Collision system.
+    CollisionSystem _collisionSystem;
+
+    /// Movement system.
+    MovementSystem _movementSystem;
+
+    /// Render system.
+    RenderSystem _renderSystem;
 
     /// Inits the window system.
     void initWindowSystem();
@@ -133,6 +150,34 @@ public:
      **/
     inline GLFWwindow *getWindow() {
         return _window;
+    }
+
+    /**
+     * Returns the animation system.
+     **/
+    inline AnimationSystem &getAnimationSystem() {
+        return _animationSystem;
+    }
+
+    /**
+     * Returns the collision system.
+     **/
+    inline CollisionSystem &getCollisionSystem() {
+        return _collisionSystem;
+    }
+
+    /**
+     * Returns the movement system.
+     **/
+    inline MovementSystem &getMovementSystem() {
+        return _movementSystem;
+    }
+
+    /**
+     * Returns the render system.
+     **/
+    inline RenderSystem &getRenderSystem() {
+        return _renderSystem;
     }
 };
 
