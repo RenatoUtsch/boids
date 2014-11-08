@@ -64,9 +64,9 @@ void Engine::initWindowSystem() {
 }
 
 void Engine::initSystems() {
+    _renderSystem.init();
     _animationSystem.init();
     _cameraSystem.init();
-    _renderSystem.init();
 }
 
 void Engine::initObjects() {

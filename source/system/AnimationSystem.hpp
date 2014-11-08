@@ -55,9 +55,6 @@ class AnimationSystem : public System, public Noncopyable {
     /// Display list of the tower.
     unsigned _towerDisplayList;
 
-    /// Next unused display list.
-    unsigned _nextDisplayList;
-
     /**
      * Creates the display lists for the boids.
      **/
@@ -84,7 +81,6 @@ class AnimationSystem : public System, public Noncopyable {
     void updateBoids();
 
 public:
-    AnimationSystem();
     void init();
     void terminate();
     void update(float dt);
@@ -97,16 +93,6 @@ public:
     // Returns the tower display list.
     inline unsigned getTowerDisplayList() {
         return _towerDisplayList;
-    }
-
-    // Returns the next display list.
-    inline unsigned getNextDisplayList() {
-        return _nextDisplayList;
-    }
-
-    // Sets the next display list.
-    inline void setNextDisplayList(unsigned value) {
-        _nextDisplayList = value;
     }
 
     // Get random boid display list.

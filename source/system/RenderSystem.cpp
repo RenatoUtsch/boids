@@ -30,85 +30,73 @@
 #include "../defs.hpp"
 #include "../util/draw.hpp"
 
-void RenderSystem::drawGround() {
-    static bool groundAsDisplayList = false;
-    static unsigned groundDisplayList = 0;
+void RenderSystem::createGround() {
+    // Get the next display list.
+    _groundDisplayList = getNextDisplayList();
+    incrementNextDisplayList();
 
-    // If the ground wasn't init'ed, init it.
-    if(!groundAsDisplayList) {
-        // Get the next display list.
-        groundDisplayList = getEngine().getAnimationSystem().getNextDisplayList();
-        getEngine().getAnimationSystem().setNextDisplayList(groundDisplayList + 1);
+    glNewList(_groundDisplayList, GL_COMPILE);
+        // Save the two colors.
+        float colors[2][3] = { {GroundOddSquareColorRed,
+                                GroundOddSquareColorGreen,
+                                GroundOddSquareColorBlue},
+                               {GroundEvenSquareColorRed,
+                                GroundEvenSquareColorGreen,
+                                GroundEvenSquareColorBlue} };
 
-        glNewList(groundDisplayList, GL_COMPILE);
-            // Save the two colors.
-            float colors[2][3] = { {GroundOddSquareColorRed,
-                                    GroundOddSquareColorGreen,
-                                    GroundOddSquareColorBlue},
-                                   {GroundEvenSquareColorRed,
-                                    GroundEvenSquareColorGreen,
-                                    GroundEvenSquareColorBlue} };
+        // Current color.
+        int curr = 0;
 
-            // Current color.
-            int curr = 0;
+        // Draw the ground.
+        for(int i = -GroundSize; i < GroundSize; i += GroundSquareSize) {
+            // Draw a square.
+            glBegin(GL_QUADS);
+                for(int j = -GroundSize; j < GroundSize; j += GroundSquareSize) {
+                    glColor3f(colors[curr][0], colors[curr][1], colors[curr][2]);
+                            glVertex3f(j, GroundLevel, i);
+                            glVertex3f(j + GroundSquareSize, GroundLevel, i);
+                            glVertex3f(j + GroundSquareSize, GroundLevel,
+                                    i + GroundSquareSize);
+                            glVertex3f(j, GroundLevel, i + GroundSquareSize);
+                    // Update the current color.
+                    curr = (curr + 1) % 2;
+                }
+            glEnd();
 
-            // Draw the ground.
-            for(int i = -GroundSize; i < GroundSize; i += GroundSquareSize) {
-                // Draw a square.
-                glBegin(GL_QUADS);
-                    for(int j = -GroundSize; j < GroundSize; j += GroundSquareSize) {
-                        glColor3f(colors[curr][0], colors[curr][1], colors[curr][2]);
-                                glVertex3f(j, GroundLevel, i);
-                                glVertex3f(j + GroundSquareSize, GroundLevel, i);
-                                glVertex3f(j + GroundSquareSize, GroundLevel,
-                                        i + GroundSquareSize);
-                                glVertex3f(j, GroundLevel, i + GroundSquareSize);
-                        // Update the current color.
-                        curr = (curr + 1) % 2;
-                    }
-                glEnd();
-
-                // Update the current color.
-                curr = (curr + 1) % 2;
-            }
-        glEndList();
-
-        groundAsDisplayList = true;
-    }
-
-    glCallList(groundDisplayList);
+            // Update the current color.
+            curr = (curr + 1) % 2;
+        }
+    glEndList();
 }
 
-void RenderSystem::drawSun() {
-    static bool sunAsDisplayList = false;
-    static unsigned sunDisplayList = 0;
+void RenderSystem::createSun() {
+    // Get the next display list.
+    _sunDisplayList = getNextDisplayList();
+    incrementNextDisplayList();
 
-    // If the sun wasn't init'ed, init it.
-    if(!sunAsDisplayList) {
-        // Get the next display list.
-        sunDisplayList = getEngine().getAnimationSystem().getNextDisplayList();
-        getEngine().getAnimationSystem().setNextDisplayList(sunDisplayList + 1);
+    glNewList(_sunDisplayList, GL_COMPILE);
+        glPushMatrix();
+            // Color of the sun.
+            glColor3f(SunColorRed, SunColorGreen, SunColorBlue);
 
-        glNewList(sunDisplayList, GL_COMPILE);
-            glPushMatrix();
-                // Color of the sun.
-                glColor3f(SunColorRed, SunColorGreen, SunColorBlue);
+            // Translate it to 1.5 times the maximum height.
+            glTranslatef(0.0, SunHeightFactor * MaximumHeight, 0.0);
 
-                // Translate it to 1.5 times the maximum height.
-                glTranslatef(0.0, SunHeightFactor * MaximumHeight, 0.0);
+            // Rotate the sun to the top.
+            glRotatef(90, 1.0, 0.0, 0.0);
 
-                // Rotate the sun to the top.
-                glRotatef(90, 1.0, 0.0, 0.0);
+            // Draw a sun.
+            util::drawCircle(100.0);
+        glPopMatrix();
+    glEndList();
+}
 
-                // Draw a sun.
-                util::drawCircle(100.0);
-            glPopMatrix();
-        glEndList();
+void RenderSystem::destroyGround() {
+    glDeleteLists(_groundDisplayList, 1);
+}
 
-        sunAsDisplayList = true;
-    }
-
-    glCallList(sunDisplayList);
+void RenderSystem::destroySun() {
+    glDeleteLists(_sunDisplayList, 1);
 }
 
 void RenderSystem::init() {
@@ -125,10 +113,19 @@ void RenderSystem::init() {
 
     // Enable 3D things.
     glEnable(GL_DEPTH_TEST);
+
+    // Init the display lists.
+    _nextDisplayList = glGenLists(MaxDisplayLists);
+
+    // Create the environment.
+    createGround();
+    createSun();
 }
 
 void RenderSystem::terminate() {
-
+    // Destroy the environment.
+    destroyGround();
+    destroySun();
 }
 
 void RenderSystem::update(float dt) {
@@ -140,10 +137,10 @@ void RenderSystem::update(float dt) {
     getEngine().getCameraSystem().lookThroughCamera();
 
     // Draw the ground.
-    drawGround();
+    glCallList(_groundDisplayList);
 
     // Draw the sun.
-    drawSun();
+    glCallList(_sunDisplayList);
 
     // Draw the center tower.
     glCallList(getEngine().getTower().displayList);

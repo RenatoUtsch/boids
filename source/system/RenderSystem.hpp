@@ -33,16 +33,52 @@
 #include "../math/Vector.hpp"
 
 class RenderSystem : public System {
-    /// Draws the ground.
-    void drawGround();
+    /// Next display list that is not used.
+    unsigned _nextDisplayList;
 
-    /// Draws the sun.
-    void drawSun();
+    /// Ground display list.
+    unsigned _groundDisplayList;
+
+    /// Sun display list.
+    unsigned _sunDisplayList;
+
+    /// Creates the ground.
+    void createGround();
+
+    /// Creates the sun.
+    void createSun();
+
+    /// Destroys the ground.
+    void destroyGround();
+
+    /// Destroys the sun.
+    void destroySun();
 
 public:
     void init();
     void terminate();
     void update(float dt);
+
+    /**
+     * Returns the next display list.
+     **/
+    inline unsigned getNextDisplayList() {
+        return _nextDisplayList;
+    }
+
+    /**
+     * Sets the next display list.
+     **/
+    inline void setNextDisplayList(unsigned next) {
+        _nextDisplayList = next;
+    }
+
+    /**
+     * Increments the next display list value.
+     **/
+    inline void incrementNextDisplayList() {
+        ++_nextDisplayList;
+    }
 
     /**
      * Framebuffer resize event. Called after a window resize.

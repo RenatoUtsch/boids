@@ -34,12 +34,12 @@
 
 void AnimationSystem::createBoidDisplayList() {
     // Start at the next display list.
-    _beginBoidDisplayList = _nextDisplayList;
+    _beginBoidDisplayList = getEngine().getRenderSystem().getNextDisplayList();
 
     _endBoidDisplayList = _beginBoidDisplayList + NumBoidDisplayLists;
 
     // Update the next display list.
-    _nextDisplayList = _endBoidDisplayList;
+    getEngine().getRenderSystem().setNextDisplayList(_endBoidDisplayList);
 
     // How much the wings will be higher by each frame.
     float wingUpRate = WingAngle / NumBoidDisplayLists;
@@ -108,7 +108,8 @@ void AnimationSystem::destroyTowerDisplayList() {
 
 void AnimationSystem::createTowerDisplayList() {
     // Draw at the next display list and increment it.
-    _towerDisplayList = _nextDisplayList++;
+    _towerDisplayList = getEngine().getRenderSystem().getNextDisplayList();
+    getEngine().getRenderSystem().incrementNextDisplayList();
 
     // Draw a tower with its base centered at (0, 0, 0).
     glNewList(_towerDisplayList, GL_COMPILE);
@@ -127,14 +128,7 @@ void AnimationSystem::createTowerDisplayList() {
     glEndList();
 }
 
-AnimationSystem::AnimationSystem() : _nextDisplayList(0) {
-
-}
-
 void AnimationSystem::init() {
-    // Initialize the number of display lists.
-    _nextDisplayList = glGenLists(MaxDisplayLists);
-
     // Create the display lists for the boids.
     createBoidDisplayList();
 
