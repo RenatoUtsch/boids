@@ -2,7 +2,7 @@
  * Author: Renato Utsch Gonçalves
  * Computer Science, UFMG
  * Computer Graphics
- * Practical exercise 1 - Boids
+ * Practical exercise 2 - Boids
  *
  * Copyright (c) 2014 Renato Utsch <renatoutsch@gmail.com>
  *

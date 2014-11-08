@@ -2,7 +2,7 @@
  * Author: Renato Utsch Gonçalves
  * Computer Science, UFMG
  * Computer Graphics
- * Practical exercise 1 - Boids
+ * Practical exercise 2 - Boids
  *
  * Copyright (c) 2014 Renato Utsch <renatoutsch@gmail.com>
  *
@@ -31,15 +31,15 @@
 /**
  * Every class that inherits this one will be noncopyable.
  **/
-class Noncopyable {
+class NonCopyable {
 
 protected:
-    Noncopyable() { }
-    ~Noncopyable() { }
+    NonCopyable() { }
+    ~NonCopyable() { }
 
 private: // Emphasize the following members are private.
-    Noncopyable(const Noncopyable &);               // Don't implement.
-    Noncopyable &operator=(const Noncopyable &);    // Don't implement.
+    NonCopyable(const NonCopyable &);               // Don't implement.
+    NonCopyable &operator=(const NonCopyable &);    // Don't implement.
 };
 
 #endif // !UTIL_NONCOPYABLE_HPP

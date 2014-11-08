@@ -1,8 +1,8 @@
 ##
- # Autor: Renato Utsch Gonçalves
- # Ciência da Computação, UFMG
- # Computação Gráfica
- # Trabalho Prático 2 - Boids
+ # Author: Renato Utsch Gonçalves
+ # Computer Science, UFMG
+ # Computer Graphics
+ # Practical exercise 2 - Boids
  #
  # Copyright (c) 2014 Renato Utsch
  #

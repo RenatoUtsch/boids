@@ -2,7 +2,7 @@
  * Author: Renato Utsch Gonçalves
  * Computer Science, UFMG
  * Computer Graphics
- * Practical exercise 1 - Boids
+ * Practical exercise 2 - Boids
  *
  * Copyright (c) 2014 Renato Utsch <renatoutsch@gmail.com>
  *
@@ -30,14 +30,14 @@
 
 #include "System.hpp"
 #include "../defs.hpp"
-#include "../util/Noncopyable.hpp"
+#include "../util/NonCopyable.hpp"
 #include <cstdlib>
 
 /**
  * This is the animation system, that manages the display lists that render the
  * objects in the game.
  **/
-class AnimationSystem : public System, public Noncopyable {
+class AnimationSystem : public System, public NonCopyable {
     /**
      * First display list of the boid.
      * All the display lists of the boid are between this one and
