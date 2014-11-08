@@ -25,36 +25,46 @@
  * THE SOFTWARE.
  */
 
-#ifndef OBJECTS_HPP
-#define OBJECTS_HPP
+#ifndef GAMEOBJECT_GAMEOBJECT_HPP
+#define GAMEOBJECT_GAMEOBJECT_HPP
 
-/*
- * This class manages the creation of game objects.
- */
-
-class GameObject;
+#include "../math/Point.hpp"
+#include "../math/Vector.hpp"
+#include "../math/EulerAngles.hpp"
 
 /**
- * This function dynamically creates a boid and returns it.
- * You MUST deallocate it after using.
+ * A GameObject.
  **/
-GameObject *createBoid();
+struct GameObject  {
+    /// Position of the object in the space.
+    Point position;
 
-/**
- * This function dynamically creates a sphere obstacle centered at (0, 0, 0) and
- * returns it.
- * You MUST deallocate it after using.
- * @param radius The radius of the sphere.
- **/
-GameObject *createSphereObstacle(float radius);
+    /// Velocity of the object.
+    Vector velocity;
 
-/**
- * This function dynamically creates a cone obstacle with its base centered at
- * (0, 0, 0) and returns it.
- * You MUST deallocate it after using.
- * @param radius The radius of the base of the cone.
- * @param height The height of the cone.
- **/
-GameObject *createConeObstacle(float radius, float height);
+    /// Orientation of the object.
+    EulerAngles orientation;
 
-#endif // !OBJECTS_HPP
+    /// Current display list.
+    unsigned displayList;
+
+    /**
+     * Constructor.
+     * Creates an object at the given position with the given orientation and
+     * velocity.
+     * @param _position Position of the object.
+     * @param _velocity Velocity of the object.
+     * @param _orientation Orientation of the object.
+     * @param _displayList the display list of the object.
+     **/
+    GameObject(Point _position, Vector _velocity, EulerAngles _orientation,
+            unsigned _displayList)
+        : position(_position),
+        velocity(_velocity),
+        orientation(_orientation),
+        displayList(_displayList) {
+
+    }
+};
+
+#endif // !GAMEOBJECT_GAMEOBJECT_HPP

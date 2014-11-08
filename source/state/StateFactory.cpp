@@ -28,6 +28,7 @@
 #include "StateFactory.hpp"
 #include "State.hpp"
 #include "IdleState.hpp"
+#include "RunState.hpp"
 
 State *stateFactory(StateId id) {
     // Go through each StateId and create the object related to it.
@@ -35,8 +36,7 @@ State *stateFactory(StateId id) {
         case IdleStateId:
             return new IdleState;
         case RunStateId:
-            return NULL;
-            //return new RunState;
+            return new RunState;
         case PauseStateId:
             return NULL;
             //return new PauseState;

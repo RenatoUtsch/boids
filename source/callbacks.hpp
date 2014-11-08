@@ -47,7 +47,7 @@ inline void errorCallback(int error, const char *description) {
  * engine's framebufferSizeEvent.
  **/
 inline void framebufferSizeCallback(GLFWwindow *window, int width, int height) {
-    getEngine().framebufferSizeEvent(window, width, height);
+    getEngine().getRenderSystem().framebufferSizeEvent(window, width, height);
 }
 
 /**

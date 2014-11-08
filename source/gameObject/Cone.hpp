@@ -25,16 +25,23 @@
  * THE SOFTWARE.
  */
 
-#ifndef COMPONENT_ANIMATION_COMPONENT_HPP
-#define COMPONENT_ANIMATION_COMPONENT_HPP
+#ifndef GAMEOBJECT_CONE_HPP
+#define GAMEOBJECT_CONE_HPP
 
-#include "Component.hpp"
+#include "GameObject.hpp"
 
-class AnimationComponent : public Component {
-    COMPONENT_CLASS(AnimationComponent)
+/**
+ * A cone that the boids will maneuver to prevent collision.
+ **/
+struct Cone : public GameObject {
+    /// The radius of the cone.
+    const float radius;
 
-public:
+    /// The height of the cone.
+    const float height;
 
+    /// Sets up the cone given its radius and height.
+    Cone(float _radius, float _height) : radius(_radius), height(_height) { }
 };
 
-#endif // !COMPONENT_ANIMATION_COMPONENT_HPP
+#endif // !GAMEOBJECT_CONE_HPP

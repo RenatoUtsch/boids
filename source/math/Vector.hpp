@@ -105,7 +105,9 @@ public:
      * Normalizes the vector.
      **/
     inline void normalize() {
-        return this->divScale(this->module());
+        double mod = this->module();
+        if(mod)
+            this->divScale(mod);
     }
 
     /**

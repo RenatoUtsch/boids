@@ -59,17 +59,44 @@ void Engine::initWindowSystem() {
     glfwSetCursorPosCallback(_window, cursorPosCallback);
     glfwSetMouseButtonCallback(_window, mouseButtonCallback);
 
-    // Get the framebuffer size.
-    int width, height;
-    glfwGetFramebufferSize(_window, &width, &height);
+    // Get the cursor position.
+    glfwGetCursorPos(_window, &_cursorXPos, &_cursorYPos);
+}
 
-    // Set up the OpenGL projection by (supposedly) emitting a GLFW event.
-    framebufferSizeEvent(_window, width, height);
+void Engine::initSystems() {
+    _animationSystem.init();
+    _cameraSystem.init();
+    _renderSystem.init();
+}
+
+void Engine::initObjects() {
+    // Add a boid.
+    _boids.push_back(Boid(Point(10, 10, -10), Vector(), EulerAngles(),
+                getAnimationSystem().getRandomBoidDisplayList(),
+                getAnimationSystem().getRandomBoidGoingUp()));
+
+    // Add a tower.
+    _tower = new Tower(getAnimationSystem().getTowerDisplayList());
 }
 
 void Engine::terminateWindowSystem() {
     glfwDestroyWindow(_window);
     glfwTerminate();
+}
+
+void Engine::terminateSystems() {
+    _animationSystem.terminate();
+    _cameraSystem.terminate();
+    _renderSystem.terminate();
+}
+
+void Engine::terminateObjects() {
+    // Remove all the boids.
+    _boids.clear();
+
+    // Delete the tower.
+    delete _tower;
+    _tower = 0;
 }
 
 void Engine::mainLoop() {
@@ -89,6 +116,9 @@ void Engine::mainLoop() {
         // Clamp the accumulator if it is too big to avoid the spiral of death.
         if(accumulator > 0.25)
             accumulator = 0.25;
+
+        // Process states.
+        getStateManager().processStates();
 
         // Get input.
         getStateManager().getCurrentState().input();
@@ -116,25 +146,40 @@ void Engine::mainLoop() {
 }
 
 Engine::Engine()
-        : _window(0) {
-    // Load everything that is needed.
+        : _window(0), _tower(0) {
+    // Reserve space for the boids.
+    _boids.reserve(ReservedBoids);
 
+    // Init the rand() system.
+    std::srand(std::time(NULL));
+
+    // Create the window.
+    initWindowSystem();
 }
 
 Engine::~Engine() {
-    // Unload everything that is needed.
-
+    // Terminate the window.
+    terminateWindowSystem();
 }
 
 int Engine::run() {
     // Inits the systems.
-    initWindowSystem();
+    initSystems();
+
+    // Inits the objects.
+    initObjects();
+
+    // Enter the run state.
+    getStateManager().changeState(RunStateId);
 
     // Main loop of the engine.
     mainLoop();
 
+    // Terminates the objects.
+    terminateObjects();
+
     // Terminates the systems.
-    terminateWindowSystem();
+    terminateSystems();
 
     return 0;
 }
@@ -145,11 +190,3 @@ void Engine::errorEvent(int error, const char *description) {
     std::exit(error);
 }
 
-void Engine::framebufferSizeEvent(GLFWwindow *window, int width, int height) {
-    // Set up the OpenGL projection.
-    glViewport(0, 0, width, height);
-    glMatrixMode(GL_PROJECTION);
-    gluPerspective(FrustumFieldOfView, (GLfloat) width / height, FrustumNear,
-            FrustumFar);
-    glMatrixMode(GL_MODELVIEW);
-}

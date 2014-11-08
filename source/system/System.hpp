@@ -40,10 +40,22 @@ public:
     virtual ~System() { }
 
     /**
+     * Inits the system.
+     * Called only once per application.
+     **/
+    virtual void init() = 0;
+
+    /**
+     * Terminates the system.
+     * Called only once per application.
+     **/
+    virtual void terminate() = 0;
+
+    /**
      * Updates the state of the components managed by this system.
      * @param dt How much time to update.
      **/
-    void update(float dt);
+    virtual void update(float dt) = 0;
 };
 
 

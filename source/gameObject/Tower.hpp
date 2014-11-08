@@ -25,12 +25,21 @@
  * THE SOFTWARE.
  */
 
-/*
- * Register your components here with the REGISTER_COMPONENT(ComponentName)
- * macro (and without semicolons).
- */
+#ifndef GAMEOBJECT_TOWER_HPP
+#define GAMEOBJECT_TOWER_HPP
 
-REGISTER_COMPONENT(AnimationComponent)
-REGISTER_COMPONENT(CollisionComponent)
-REGISTER_COMPONENT(MovementComponent)
-REGISTER_COMPONENT(RenderComponent)
+#include "GameObject.hpp"
+
+class Tower : public GameObject {
+
+public:
+    /**
+     * Creates a tower at (0, 0, 0) with the given display list.
+     **/
+    Tower(unsigned _displayList)
+            : GameObject(Point(), Vector(), EulerAngles(), _displayList) {
+
+    }
+};
+
+#endif // !GAMEOBJECT_TOWER_HPP

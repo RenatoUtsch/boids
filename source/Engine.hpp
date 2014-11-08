@@ -28,10 +28,14 @@
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
 
+#include <vector>
+#include "gameObject/Boid.hpp"
+#include "gameObject/Tower.hpp"
 #include "state/State.hpp"
 #include "state/StateManager.hpp"
 #include "system/System.hpp"
 #include "system/AnimationSystem.hpp"
+#include "system/CameraSystem.hpp"
 #include "system/CollisionSystem.hpp"
 #include "system/MovementSystem.hpp"
 #include "system/RenderSystem.hpp"
@@ -45,14 +49,35 @@
  * @see getEngine()
  **/
 class Engine {
+
+public:
+    /// Vector of boids.
+    typedef std::vector<Boid> BoidVector;
+
+private:
     /// The window of the engine.
     GLFWwindow *_window;
 
     /// The elapsed time since the mainLoop began, in seconds.
     double _elapsedTime;
 
+    /// x position of the cursor.
+    double _cursorXPos;
+
+    /// y position of the cursor.
+    double _cursorYPos;
+
+    /// The boids.
+    std::vector<Boid> _boids;
+
+    /// The center tower.
+    Tower *_tower;
+
     /// Animation system.
     AnimationSystem _animationSystem;
+
+    /// Camera system.
+    CameraSystem _cameraSystem;
 
     /// Collision system.
     CollisionSystem _collisionSystem;
@@ -66,8 +91,20 @@ class Engine {
     /// Inits the window system.
     void initWindowSystem();
 
+    /// Inits the engine's systems.
+    void initSystems();
+
+    /// Inits the objects. Must be init'ed after the systems.
+    void initObjects();
+
     /// Terminates the window system.
     void terminateWindowSystem();
+
+    /// Terminates the objects.
+    void terminateObjects();
+
+    /// Terminates the engine's systems.
+    void terminateSystems();
 
     /**
      * Main loop of the engine. Responsible for the frame-by-frame updates.
@@ -116,20 +153,22 @@ public:
     void errorEvent(int error, const char *description);
 
     /**
-     * Framebuffer resize event. Called after a window resize.
-     * This function sets up the OpenGL projection again for the given window
-     * to match the new framebuffer size.
-     * The framebuffer size is is the size of the window in pixels, not in screen
-     * coordinates. OpenGL expects the size in pixels, and, while the screen
-     * coordinates and pixels are the same in some platforms, they differ in
-     * others (i.e. Macs with Retina Display).
-     * Because of that, we listen to changes in the framebuffer, and not to
-     * changes in the window.
-     * @param window The window that was resized.
-     * @param width The new width of the framebuffer.
-     * @param height The new height of the framebuffer.
+     * Saves the last x and y position in the given arguments.
+     * @param xpos will be replaced with the x position of the cursor.
+     * @param ypos will be replaced with the y position of the cursor.
      **/
-    void framebufferSizeEvent(GLFWwindow *window, int width, int height);
+    inline void getLastCursorPos(double *xpos, double *ypos) {
+        *xpos = _cursorXPos;
+        *ypos = _cursorYPos;
+    }
+
+    /**
+     * Sets the last x and y position in the given arguments.
+     **/
+    inline void setLastCursorPos(double xpos, double ypos) {
+        _cursorXPos = xpos;
+        _cursorYPos = ypos;
+    }
 
     /**
      * Returns the elapsed time since the mainLoop started, in seconds.
@@ -153,10 +192,31 @@ public:
     }
 
     /**
+     * Returns the vector of boids.
+     **/
+    inline BoidVector &getBoids() {
+        return _boids;
+    }
+
+    /**
+     * Returns the tower.
+     **/
+    inline Tower &getTower() {
+        return *_tower;
+    }
+
+    /**
      * Returns the animation system.
      **/
     inline AnimationSystem &getAnimationSystem() {
         return _animationSystem;
+    }
+
+    /**
+     * Returns the camera system.
+     **/
+    inline CameraSystem &getCameraSystem() {
+        return _cameraSystem;
     }
 
     /**

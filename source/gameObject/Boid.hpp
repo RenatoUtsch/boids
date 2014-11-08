@@ -1,6 +1,8 @@
 /*
- * Math library intended for computer graphics, animation, physics and games
- * (but not restricted to it).
+ * Author: Renato Utsch Gonçalves
+ * Computer Science, UFMG
+ * Computer Graphics
+ * Practical exercise 1 - Boids
  *
  * Copyright (c) 2014 Renato Utsch <renatoutsch@gmail.com>
  *
@@ -23,26 +25,34 @@
  * THE SOFTWARE.
  */
 
-#ifndef MATH_MATH_HPP
-#define MATH_MATH_HPP
+#ifndef GAMEOBJECT_BOID_HPP
+#define GAMEOBJECT_BOID_HPP
+
+#include "GameObject.hpp"
 
 /**
- * Proper inclusion of the standard math library and definition of additional
- * types in case they are missing.
- * Please use this header instead of including <cmath>.
+ * The data that represents a boid.
  **/
+struct Boid : public GameObject {
+    /// If the display lists are going up or down.
+    bool displayListGoingUp;
 
-#include <cmath>
+    /**
+     * Constructor.
+     * Creates a boid at the given position, velocity and orientation.
+     * @param _position The position of the boid.
+     * @param _velocity The velocity of the boid.
+     * @param _orientation The orientation of the boid.
+     * @param _displayList The initial display list of the boid.
+     * @param _displayListGoingUp If the display lists are being incremented or
+     * decremented.
+     **/
+    Boid(Point _position, Vector _velocity, EulerAngles _orientation,
+            unsigned _displayList, bool _displayListGoingUp)
+        : GameObject(_position, _velocity, _orientation, _displayList),
+        displayListGoingUp(_displayListGoingUp) {
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif // !M_PI
+    }
+};
 
-/**
- * Converts from degrees to radians.
- **/
-inline double toRads(double degrees) {
-    return degrees * (M_PI / 180.0);
-}
-
-#endif // !MATH_MATH_HPP
+#endif // !GAMEOBJECT_BOID_HPP

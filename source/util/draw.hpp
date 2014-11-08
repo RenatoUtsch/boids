@@ -22,25 +22,31 @@
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFOTWARE.
+ * THE SOFTWARE.
  */
 
-#include "objects.hpp"
-#include "GameObject.hpp"
-#include "glfw.hpp"
+#ifndef UTIL_DRAW_HPP
+#define UTIL_DRAW_HPP
 
-GameObject *createBoid() {
-    GameObject *boid = new GameObject;
+/*
+ * Utility drawing functions.
+ */
+
+namespace util {
+    /**
+     * Draws a circle centered at (0, 0, 0).
+     * @param radius The radius of the circle.
+     **/
+    void drawCircle(float radius);
+
+    /**
+     * Draws a pyramid with its base centered at (0, 0, 0) and pointed in the
+     * -z direction. The base is, then, in the xy plane with z = 0.
+     * @param height The height of the pyramid.
+     * @param diagonalSize The size of the diagonal of the base.
+     * @param diagonalAngle The angle between the top and bottom diagonals.
+     **/
+    void drawPyramid(float height, float diagonalSize, float diagonalAngle);
 }
 
-GameObject *createSphereObstacle(float radius) {
-    GameObject *sphere = new GameObject;
-    return sphere;
-}
-
-GameObject *createConeObstacle(float radius, float height) {
-    GameObject *cone = new GameObject;
-
-
-    return cone;
-}
+#endif // !UTIL_DRAW_HPP

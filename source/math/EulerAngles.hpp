@@ -29,6 +29,7 @@
 #include "../glfw.hpp"
 #include "math.hpp"
 #include "Quaternion.hpp"
+#include "Vector.hpp"
 
 /**
  * Implementation of euler angles to represent the orientation of an object.
@@ -47,9 +48,12 @@ public:
 
     /**
      * Constructor of the class.
-     * @param alphaVal the alpha value of the euler angles.
-     * @param betaVal the beta value of the euler angles.
-     * @param gammaVal the gamma value of the euler angles.
+     * @param alphaVal the alpha value (orientation in the x axis) of the euler
+     * angles.
+     * @param betaVal the beta value (orientation in the y axis) of the euler
+     * angles.
+     * @param gammaVal the gamma value (orientation in the z axis) of the euler
+     * angles.
      **/
     EulerAngles(float alphaVal = 0.0, float betaVal = 0.0, float gammaVal = 0.0)
             : alpha(alphaVal), beta(betaVal), gamma(gammaVal) {
@@ -59,7 +63,7 @@ public:
     /**
      * Converts the euler angles to quaternions and returns the quaternion.
      **/
-    Quaternion toQuaternion() {
+    inline Quaternion toQuaternion() const {
         float piDiv180 = M_PI / 180.0,
             piMultAlpha = piDiv180 * (this->alpha / 2.0),
             piMultBeta = piDiv180 * (this->beta / 2.0),
@@ -70,6 +74,17 @@ public:
                    q3(cos(piMultGamma), 0.0, 0.0, sin(piMultGamma));
 
         return q1 * q2 * q3;
+    }
+
+    /**
+     * Converts the euler angles to vectors pointing in the direction of
+     * the orientation.
+     **/
+    inline Vector toVector() const {
+        float cos_beta = cos(beta);
+        return Vector(cos(alpha) * cos_beta,
+                sin(alpha) * cos_beta,
+                sin(beta));
     }
 
     /// += operator for euler angles.

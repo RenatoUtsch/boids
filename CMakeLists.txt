@@ -41,7 +41,7 @@ set( BOIDS_LIBRARIES "" )
 # Add gcc options
 if( UNIX )
     set( BOIDS_DEFINITIONS
-        "${BOIDS_DEFINITIONS} -Wall -Wextra -Werror -Wno-deprecated-declarations -Wno-unused-parameter -Wno-comment -g -pg" )
+        "${BOIDS_DEFINITIONS} -Wall -Wextra -Werror -Wno-deprecated-declarations -Wno-unused-parameter -Wno-comment -g3 -pg" )
 endif()
 
 # Add catch for unit testing.
@@ -77,6 +77,12 @@ endif()
 set( BOIDS_SOURCE_FILES "${BOIDS_SOURCE_DIR}/source/Engine.cpp"
                         "${BOIDS_SOURCE_DIR}/source/main.cpp"
                         "${BOIDS_SOURCE_DIR}/source/state/StateFactory.cpp"
+                        "${BOIDS_SOURCE_DIR}/source/system/AnimationSystem.cpp"
+                        "${BOIDS_SOURCE_DIR}/source/system/CameraSystem.cpp"
+                        "${BOIDS_SOURCE_DIR}/source/system/CollisionSystem.cpp"
+                        "${BOIDS_SOURCE_DIR}/source/system/MovementSystem.cpp"
+                        "${BOIDS_SOURCE_DIR}/source/system/RenderSystem.cpp"
+                        "${BOIDS_SOURCE_DIR}/source/util/draw.cpp"
                         "${BOIDS_SOURCE_DIR}/source/util/sleep.cpp" )
 
 # Compile
