@@ -37,7 +37,7 @@ public:
      * Creates a tower at (0, 0, 0) with the given display list.
      **/
     Tower(unsigned _displayList)
-            : GameObject(Point(), Vector(), EulerAngles(), _displayList) {
+            : GameObject(_displayList, Point(), 0.0, Vector()) {
 
     }
 };

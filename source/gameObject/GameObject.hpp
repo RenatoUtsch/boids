@@ -30,39 +30,40 @@
 
 #include "../math/Point.hpp"
 #include "../math/Vector.hpp"
-#include "../math/EulerAngles.hpp"
 
 /**
  * A GameObject.
  **/
 struct GameObject  {
-    /// Position of the object in the space.
-    Point position;
-
-    /// Velocity of the object.
-    Vector velocity;
-
-    /// Orientation of the object.
-    EulerAngles orientation;
-
     /// Current display list.
     unsigned displayList;
 
+    /// Position of the object in the space.
+    Point position;
+
+    /// Speed of the object in his direction.
+    float speed;
+
+    /// Direction of the object.
+    Vector direction;
+
+    /// Up vector of the object. Defaults to (0.0, 1.0, 0.0).
+    Vector up;
+
     /**
      * Constructor.
-     * Creates an object at the given position with the given orientation and
-     * velocity.
-     * @param _position Position of the object.
-     * @param _velocity Velocity of the object.
-     * @param _orientation Orientation of the object.
+     * Creates an object at the given position with the given direction, up
+     * and speed.
      * @param _displayList the display list of the object.
+     * @param _position Position of the object.
+     * @param _speed Speed in the object's direction.
+     * @param _direction Direction of the object.
+     * @param _up Up vector of the object (defaults to (0.0, 1.0, 0.0)).
      **/
-    GameObject(Point _position, Vector _velocity, EulerAngles _orientation,
-            unsigned _displayList)
-        : position(_position),
-        velocity(_velocity),
-        orientation(_orientation),
-        displayList(_displayList) {
+    GameObject(unsigned _displayList, Point _position, float _speed,
+            Vector _direction, Vector _up = Vector(0.0, 1.0, 0.0))
+            : displayList(_displayList), position(_position), speed(_speed),
+            direction(_direction), up(_up) {
 
     }
 };

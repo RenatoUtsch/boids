@@ -83,13 +83,13 @@ const float TowerBaseRadius = 100.0;
 const float TowerHeight = 300.0;
 
 /// The Red color of the tower.
-const float TowerColorRed = 0.617;
+const float TowerColorRed = 0.396;
 
 /// The Green color of the tower.
-const float TowerColorGreen = 0.364;
+const float TowerColorGreen = 0.263;
 
 /// The Blue color of the tower.
-const float TowerColorBlue = 0.084;
+const float TowerColorBlue = 0.129;
 
 /// Red (from rgb) color of the boids.
 const float BoidColorRed = 1.0;
@@ -198,19 +198,19 @@ const float GroundSquareSize = 20.0;
 const float GroundEvenSquareColorRed = 0.0;
 
 /// Green component of the color of the even squares. Between 0.0 and 1.0.
-const float GroundEvenSquareColorGreen = 0.4;
+const float GroundEvenSquareColorGreen = 0.2;
 
 /// Blue component of the color of the even squares. Between 0.0 and 1.0.
 const float GroundEvenSquareColorBlue = 0.0;
 
 /// Red component of the color of the odd squares. Between 0.0 and 1.0.
-const float GroundOddSquareColorRed = 0.2;
+const float GroundOddSquareColorRed = 0.0;
 
 /// Green component of the color of the odd squares. Between 0.0 and 1.0.
 const float GroundOddSquareColorGreen = 0.8;
 
 /// Blue component of the color of the odd squares. Between 0.0 and 1.0.
-const float GroundOddSquareColorBlue = 0.2;
+const float GroundOddSquareColorBlue = 0.0;
 
 /// Button that change the camera to free camera.
 const int FreeCameraToggle = GLFW_KEY_1;

@@ -71,15 +71,10 @@ void Engine::initSystems() {
 
 void Engine::initObjects() {
     // Position the objective boid randomly in the center of the map.
-    /*
     float boidPosX = std::rand() % ((int) GroundSize) - GroundSize / 2;
     float boidPosY = std::rand() % ((int)(MaximumHeight - MinimumHeight) / 2)
         + MinimumHeight;
     float boidPosZ = std::rand() % ((int) GroundSize) - GroundSize / 2;
-    */
-    float boidPosX = 100.0;
-    float boidPosY = TowerHeight;
-    float boidPosZ = 500.0;
 
     // Do not position the boid in the tower.
     if(std::abs(boidPosX) < TowerBaseRadius)
@@ -89,27 +84,22 @@ void Engine::initObjects() {
 
     // Create the position point.
     Point objBoidPos = Point(boidPosX, boidPosY, boidPosZ);
-    std::cout << objBoidPos << std::endl;
 
-    // Random orientation.
-    EulerAngles objBoidOrient = EulerAngles(0.0, 90.0, 0.0);
-    //EulerAngles objBoidOrient = EulerAngles(0.0, 0.0, 0.0);
+    // Random speed.
+    float objBoidSpeed = (rand() % 1000) / 1000;
 
-    // Velocity of the objective boid.
-    Vector objBoidVel = objBoidOrient.toVector();
-    objBoidVel.normalize().scale(BoidInitialVelocity);
-
-    std::cout << EulerAngles(90.0, 45.0, 0).toVector() << std::endl;
+    // Direction of the objective boid.
+    Vector objBoidDir = Vector(0.0, 0.0, -1.0);
 
     // Add the objective boid moving to the center of the map.
-    _objectiveBoid = new Boid(objBoidPos, objBoidVel, objBoidOrient,
-            getAnimationSystem().getRandomBoidDisplayList(),
-            getAnimationSystem().getRandomBoidGoingUp());
+    _objectiveBoid = new Boid( getAnimationSystem().getRandomBoidDisplayList(),
+            getAnimationSystem().getRandomBoidGoingUp(),
+            objBoidPos, objBoidSpeed, objBoidDir);
 
     // Add a boid.
-    _boids.push_back(Boid(Point(10, 10, -10), Vector(), EulerAngles(),
-                getAnimationSystem().getRandomBoidDisplayList(),
-                getAnimationSystem().getRandomBoidGoingUp()));
+    _boids.push_back(Boid(getAnimationSystem().getRandomBoidDisplayList(),
+                getAnimationSystem().getRandomBoidGoingUp(),
+                Point(10, 10, -10), objBoidSpeed, objBoidDir));
 
     // Add a tower.
     _tower = new Tower(getAnimationSystem().getTowerDisplayList());

@@ -28,6 +28,7 @@
 
 #include <iostream>
 #include "math.hpp"
+#include "Matrix4d.hpp"
 
 /**
  * An implementation of a Vector (as in linear algebra).
@@ -70,6 +71,41 @@ public:
     Vector(float xVal = 0.0, float yVal = 0.0, float zVal = 0.0, float hVal = 0.0)
         : x(xVal), y(yVal), z(zVal), h(hVal) {
 
+    }
+
+    /**
+     * Converts the direction vector and up vector to a rotation matrix.
+     * @param direction Direction to look at.
+     * @param up Up vector.
+     **/
+    static Matrix4d toRotationMatrix(Vector direction, Vector up) {
+        direction.normalize();
+        up.normalize();
+
+        // Orthagonalize up. upOrt = up - proj(direction, up);
+        up -= proj(direction, up);
+
+        // Third axis.
+        Vector localAxis = cross(up, direction);
+
+        Matrix4d matrix;
+        matrix[0] = localAxis.x;
+        matrix[1] = localAxis.y;
+        matrix[2] = localAxis.z;
+        matrix[3] = 0.0;
+        matrix[4] = up.x;
+        matrix[5] = up.y;
+        matrix[6] = up.z;
+        matrix[7] = 0.0;
+        matrix[8] = direction.x;
+        matrix[9] = direction.y;
+        matrix[10] = direction.z;
+        matrix[11] = 0.0;
+        matrix[12] = 0.0;
+        matrix[13] = 0.0;
+        matrix[14] = 0.0;
+        matrix[15] = 1.0;
+        return matrix;
     }
 
     /**
@@ -139,6 +175,18 @@ public:
                 v1.x * v2.y - v1.y * v2.x);
     }
 
+    /**
+     * Orthogonal projection of v with relation to w.
+     **/
+    static inline Vector proj(Vector w, const Vector &v) {
+        float dotProd = dot(v, w);
+        float module2 = std::pow(w.module(), 2);
+        float factor = dotProd / module2;
+
+        w *= factor;
+        return w;
+    }
+
     /// += operator for vectors.
     Vector &operator+=(const Vector &right) {
         this->x += right.x;
@@ -154,6 +202,14 @@ public:
         this->y -= right.y;
         this->z -= right.z;
         this->h -= right.h;
+        return *this;
+    }
+
+    // -= operator for floats.
+    Vector &operator-=(const float &right) {
+        this->x -= right;
+        this->y -= right;
+        this->z -= right;
         return *this;
     }
 
@@ -183,6 +239,12 @@ inline Vector operator+(Vector left, const Vector &right) {
 
 /// - operator for vectors.
 inline Vector operator-(Vector left, const Vector &right) {
+    left -= right;
+    return left;
+}
+
+/// - operator for vectors with floats.
+inline Vector operator-(Vector left, float right) {
     left -= right;
     return left;
 }
@@ -225,6 +287,16 @@ inline bool operator!=(const Vector &left, const Vector &right) {
 inline std::ostream &operator<<(std::ostream &os, const Vector &obj) {
     os << obj.x << "i + " << obj.y << "j + " << obj.z << "k";
     return os;
+}
+
+namespace glext {
+    /**
+     * Specify an OpenGL normal using a Vector class.
+     * @param vector The (v)ector to use as normal.
+     **/
+    inline void glNormalv(const Vector &vector) {
+        glNormal3f(vector.x, vector.y, vector.z);
+    }
 }
 
 #endif // !MATH_VECTOR_HPP

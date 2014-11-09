@@ -39,17 +39,19 @@ struct Boid : public GameObject {
 
     /**
      * Constructor.
-     * Creates a boid at the given position, velocity and orientation.
-     * @param _position The position of the boid.
-     * @param _velocity The velocity of the boid.
-     * @param _orientation The orientation of the boid.
+     * Creates a boid at the given position and velocity.
      * @param _displayList The initial display list of the boid.
      * @param _displayListGoingUp If the display lists are being incremented or
+     * @param _position The position of the boid.
+     * @param _speed The speed in the boid's direction.
+     * @param _direction The direction of the boid.
+     * @param _up Up vector of the boid. Defaults to (0.0, 1.0, 0.0).
      * decremented.
      **/
-    Boid(Point _position, Vector _velocity, EulerAngles _orientation,
-            unsigned _displayList, bool _displayListGoingUp)
-        : GameObject(_position, _velocity, _orientation, _displayList),
+    Boid(unsigned _displayList, bool _displayListGoingUp,
+            Point _position, float _speed,
+            Vector _direction, Vector _up = Vector(0.0, 1.0, 0.0))
+        : GameObject(_displayList, _position, _speed, _direction, _up),
         displayListGoingUp(_displayListGoingUp) {
 
     }

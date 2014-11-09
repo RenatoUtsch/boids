@@ -65,7 +65,9 @@ public:
      * @param direction The direction vector.
      * @param up up vector.
      **/
+#if 0
     EulerAngles(Vector direction, Vector up) {
+        // Seriously buggy.
         direction.normalize();
         up.normalize();
         Vector w0 = Vector(-direction.y, direction.x, 0.0);
@@ -77,38 +79,8 @@ public:
         alpha = -toDegrees(alphaInRads);
         beta = toDegrees(betaInRads);
         gamma = 0.0;
-
-        /*
-        float alphaInRads = asin(direction.y);
-
-        alpha = toDegrees(alphaInRads);
-        beta = toDegrees(asin(direction.x / cos(alphaInRads)));
-        gamma = 0.0;
-        */
-
-/*
-        Vector dirYZ = Vector(0.0, direction.y, direction.z).normalize();
-        Vector dirXZ = Vector(direction.x, 0.0, direction.z).normalize();
-
-        alpha = std::acos(Vector::dot(dirYZ, Vector(0.0, 0.0, 1.0)));
-        beta = std::acos(Vector::dot(dirXZ, Vector(1.0, 0.0, 0.0)));
-        gamma = 0.0;
-        */
-/*
-        alpha = std::asin(direction.z);
-        beta = 0.0;
-        gamma = std::atan2(direction.y, direction.x);
-        */
-/*
-        Vector wingD = Vector(-direction.y, direction.x, 0);
-        Vector up0 = Vector::cross(wingD, direction);
-
-        alpha = std::asin(direction.z);
-        beta = 0.0;
-        gamma = Vector::dot(wingD, up) / Vector::dot(up0, up)
-                / std::abs(wingD.module()) * std::abs(up0.module());
-                */
     }
+#endif
 
     /**
      * Converts the euler angles to quaternions and returns the quaternion.
@@ -130,7 +102,9 @@ public:
      * Converts the euler angles to vectors pointing in the direction of
      * the orientation.
      **/
+#if 0
     inline Vector toVector() const {
+        // Seriously buggy.
         float alphaRads = toRads(alpha);
         float betaRads = toRads(beta);
         float cosAlpha = cos(alphaRads);
@@ -139,6 +113,7 @@ public:
                 sin(alphaRads),
                 -cosAlpha * cos(betaRads));
     }
+#endif
 
     /// += operator for euler angles.
     EulerAngles &operator+=(const EulerAngles &right) {

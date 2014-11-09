@@ -50,16 +50,11 @@ void CameraSystem::terminate() {
 }
 
 void CameraSystem::orientCameraToTheBoids() {
-    Vector direction = getEngine().getObjectiveBoid().position - _position;
-    std::cout << "pos " << getEngine().getObjectiveBoid().position << std::endl;
-    std::cout << "dir " << direction << std::endl;
-
-    _orientation = EulerAngles(direction, Vector(0.0, 1.0, 0.0));
-    std::cout << "orient" << _orientation << std::endl;
+    //Vector direction = getEngine().getObjectiveBoid().position - _position;
 }
 
 void CameraSystem::positionCameraBehindTheBoids() {
-    Vector direction = getEngine().getObjectiveBoid().orientation.toVector();
+    Vector direction = getEngine().getObjectiveBoid().direction;
     direction *= InitialCameraDistance;
 
     _position.x = getEngine().getObjectiveBoid().position.x - direction.x;

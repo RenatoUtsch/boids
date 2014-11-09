@@ -131,8 +131,8 @@ void RenderSystem::init() {
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
 
     // Colors.
-    //glEnable(GL_COLOR_MATERIAL);
-    //glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    glEnable(GL_COLOR_MATERIAL);
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 
     // Init the display lists.
     _nextDisplayList = glGenLists(MaxDisplayLists);
@@ -159,7 +159,7 @@ void RenderSystem::update(float dt) {
 
     // Draw the light.
     glDisable(GL_LIGHTING);
-    float sunPosition[] = {0.0, SunHeightFactor * MaximumHeight, 0.0, 1.0};
+    float sunPosition[] = {0.0, SunHeightFactor * MaximumHeight - 5.0, 0.0, 1.0};
     glLightfv(GL_LIGHT0, GL_POSITION, sunPosition);
     glEnable(GL_LIGHTING);
 
@@ -183,7 +183,9 @@ void RenderSystem::update(float dt) {
         glext::glTranslatep(getEngine().getObjectiveBoid().position);
 
         // Rotate the objective boid.
-        glext::glRotatea(getEngine().getObjectiveBoid().orientation);
+        glext::glMultMatrixm(Vector::toRotationMatrix(
+                getEngine().getObjectiveBoid().direction,
+                getEngine().getObjectiveBoid().up));
 
         glCallList(getEngine().getObjectiveBoid().displayList);
     glPopMatrix();
