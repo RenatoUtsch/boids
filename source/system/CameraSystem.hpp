@@ -55,10 +55,25 @@ private:
     /// Position of the camera in space.
     Point _position;
 
-    /// Direction vector of the camera in space.
-    EulerAngles _orientation;
+    /// Direction of the camera.
+    Vector _direction;
 
-    /// Camera sensitivity.
+    /// Right vector of the camera.
+    Vector _right;
+
+    /// Up vector of the camera.
+    Vector _up;
+
+    /// Horizontal angle.
+    float _horizontalAngle;
+
+    /// Vertical angle.
+    float _verticalAngle;
+
+    /// Speed of the camera.
+    float _cameraSpeed;
+
+    /// Camera sensitivity to the mouse.
     float _cameraSensitivity;
 
     /// Current camera type.
@@ -131,11 +146,6 @@ public:
     /// Returns the current position of the camera.
     inline Point &getCameraPosition() {
         return _position;
-    }
-
-    /// Returns the current orientation of the camera.
-    inline EulerAngles &getCameraOrientation() {
-        return _orientation;
     }
 };
 

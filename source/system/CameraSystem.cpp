@@ -29,9 +29,13 @@
 #include "../Engine.hpp"
 #include "../defs.hpp"
 #include "../gameObject/Boid.hpp"
+#include "../math/math.hpp"
 
 CameraSystem::CameraSystem()
         : _position(0, MinimumHeight, 0),
+        _horizontalAngle(M_PI),
+        _verticalAngle(0.0),
+        _cameraSpeed(DefaultCameraMovementSpeed),
         _cameraSensitivity(DefaultCameraSensitivity),
         _cameraType(FixedDistanceCamera),
         _cameraMovable(false), _cameraOrientable(false),
@@ -67,57 +71,21 @@ void CameraSystem::moveCamera(float dt) {
     if(!_cameraMovable)
         return;
 
-    // Vector to break up our movement along the X, Y and Z axis.
-    Vector movement;
+    // Move forward.
+    if(glfwGetKey(getEngine().getWindow(), CameraForwardKey) == GLFW_PRESS)
+        _position += _direction * dt * _cameraSpeed;
 
-    // Get the sine and cosine of our X and Y axis rotation.
-    double sinXRot = sin(toRads(_orientation.alpha));
-    double cosXRot = cos(toRads(_orientation.alpha));
-    double sinYRot = sin(toRads(_orientation.beta));
-    double cosYRot = cos(toRads(_orientation.beta));
+    // Move backward.
+    if(glfwGetKey(getEngine().getWindow(), CameraBackwardKey) == GLFW_PRESS)
+        _position -= _direction * dt * _cameraSpeed;
 
-    // Cancels moving on the Z axis when we're looking up or down.
-    double pitchLimitFactor = cosXRot;
+    // Strafe right.
+    if(glfwGetKey(getEngine().getWindow(), CameraRightStrafeKey) == GLFW_PRESS)
+        _position += _right * dt * _cameraSpeed;
 
-    if(_holdingForward) {
-        movement.x += sinYRot * pitchLimitFactor;
-        movement.y -= sinXRot;
-        movement.z -= cosYRot * pitchLimitFactor;
-    }
-    if(_holdingBackward) {
-        movement.x -= sinYRot * pitchLimitFactor;
-        movement.y += sinXRot;
-        movement.z += cosYRot * pitchLimitFactor;
-    }
-    if(_holdingLeftStrafe) {
-        movement.x -= cosYRot;
-        movement.z -= sinYRot;
-    }
-    if(_holdingRightStrafe) {
-        movement.x += cosYRot;
-        movement.z += sinYRot;
-    }
-
-    // Normalise the movement vector.
-    movement.normalize();
-
-    // Calculate the value to keep the movement the same speed regardless of
-    // framerate.
-    // Apply it to the movement vector.
-    movement *= CameraMovementSpeedFactor * dt;
-
-    // Apply the movement to our position.
-    _position += movement;
-
-    // If we are at the minimum height, put us at the minimum height.
-    // The position is inverted.
-    if(_position.y < MinimumHeight)
-        _position.y = MinimumHeight;
-
-    // If we are at the maximum height, put us at the maximum height.
-    // The position is inverted.
-    if(_position.y > MaximumHeight)
-        _position.y = MaximumHeight;
+    // Strafe left.
+    if(glfwGetKey(getEngine().getWindow(), CameraLeftStrafeKey) == GLFW_PRESS)
+        _position -= _right * dt * _cameraSpeed;
 }
 
 void CameraSystem::update(float dt) {
@@ -134,12 +102,9 @@ void CameraSystem::update(float dt) {
 }
 
 void CameraSystem::lookThroughCamera() {
-    // Rotate the camera to the location in space.
-    glRotatef(_orientation.alpha, 1.0, 0.0, 0.0); // up and down
-    glRotatef(_orientation.beta, 0.0, 1.0, 0.0); // left and right
-
-    // Translate to the position of our camera.
-    glTranslatef(-_position.x, -_position.y, -_position.z);
+    gluLookAt(_position.x, _position.y, _position.z,
+            _direction.x, _direction.y, _direction.z,
+            _up.x, _up.y, _up.z);
 }
 
 void CameraSystem::setCameraType(CameraType camera) {
@@ -270,29 +235,39 @@ void CameraSystem::cursorPosEvent(GLFWwindow *window, double xpos, double ypos) 
     getEngine().getLastCursorPos(&oldx, &oldy);
 
     // Calculate the horizontal and vertical mouse movement.
-    double horizMovement = (xpos - oldx) * _cameraSensitivity;
-    double vertMovement = (ypos - oldy) * _cameraSensitivity;
+    _horizontalAngle += (xpos - oldx) * _cameraSensitivity;
+    _verticalAngle += (ypos - oldy) * _cameraSensitivity;
 
-    // Apply the movement to our rotation vector. The vertical (look up and
-    // down) movement is applied to the X axis and the horizontal (look left
-    // and right) movement is applied to the Y axis.
-    _orientation.alpha += vertMovement;
-    _orientation.beta += horizMovement;
-
-    // Limit looking to vertically up.
-    if(_orientation.alpha > 90.0)
-        _orientation.alpha = 90.0;
+    // Limit looking up to vertically up.
+    float pid2 = M_PI / 2.0;
+    if(_verticalAngle > pid2)
+        _verticalAngle = pid2;
 
     // Limit looking down to vertically down.
-    if(_orientation.alpha < -90.0)
-        _orientation.alpha = -90.0;
+    if(_verticalAngle < -pid2)
+        _verticalAngle = -pid2;
 
     // Looking left and right - keep angles in the range 0.0 to 360.o.
     // 0 degrees is looking directly down the negative Z axis "North", 90
     // degrees is "East", 180 degrees is "South", 270 degrees is "West".
-    if(_orientation.beta < 0.0)
-        _orientation.beta += 360.0;
-    if(_orientation.beta > 360.0)
-        _orientation.beta -= 360.0;
+    float pim2 = 2.0 * M_PI;
+    if(_horizontalAngle < 0.0)
+        _horizontalAngle += pim2;
+    if(_horizontalAngle > pim2)
+        _horizontalAngle -= pim2;
+
+    // Calculate the direction.
+    float cosVerticalAngle = cos(_verticalAngle);
+    _direction.x = cosVerticalAngle * sin(_horizontalAngle);
+    _direction.y = sin(_verticalAngle);
+    _direction.z = cosVerticalAngle * cos(_horizontalAngle);
+
+    // Calculate the right.
+    _right.x = sin(_horizontalAngle - pid2);
+    _right.y = 0.0;
+    _right.z = cos(_horizontalAngle - pid2);
+
+    // Calculates the up.
+    _up = Vector::cross(_right, _direction);
 }
 
