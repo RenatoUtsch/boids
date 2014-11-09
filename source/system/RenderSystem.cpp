@@ -48,16 +48,18 @@ void RenderSystem::createGround() {
         int curr = 0;
 
         // Draw the ground.
+        glNormal3f(0.0, 1.0, 0.0);
         for(int i = -GroundSize; i < GroundSize; i += GroundSquareSize) {
             // Draw a square.
             glBegin(GL_QUADS);
                 for(int j = -GroundSize; j < GroundSize; j += GroundSquareSize) {
                     glColor3f(colors[curr][0], colors[curr][1], colors[curr][2]);
-                            glVertex3f(j, GroundLevel, i);
-                            glVertex3f(j + GroundSquareSize, GroundLevel, i);
-                            glVertex3f(j + GroundSquareSize, GroundLevel,
-                                    i + GroundSquareSize);
-                            glVertex3f(j, GroundLevel, i + GroundSquareSize);
+                    glVertex3f(j, GroundLevel, i);
+                    glVertex3f(j + GroundSquareSize, GroundLevel, i);
+                    glVertex3f(j + GroundSquareSize, GroundLevel,
+                            i + GroundSquareSize);
+                    glVertex3f(j, GroundLevel, i + GroundSquareSize);
+
                     // Update the current color.
                     curr = (curr + 1) % 2;
                 }
@@ -111,8 +113,26 @@ void RenderSystem::init() {
     // Set up the OpenGL projection by (supposedly) emitting a GLFW event.
     framebufferSizeEvent(getEngine().getWindow(), width, height);
 
+    // Enable lightning things.
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glShadeModel(GL_SMOOTH);
+    glEnable(GL_NORMALIZE);
+
     // Enable 3D things.
     glEnable(GL_DEPTH_TEST);
+
+    // Configurating the light.
+    float ambientLight[] = {1.0f, 1.0f, 1.0f, 1.0f};
+    float diffuseLight[] = {1.0, 1.0, 1.0, 1.0};
+    float specularLight[] = {1.0, 1.0, 1.0, 1.0};
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
+
+    // Colors.
+    //glEnable(GL_COLOR_MATERIAL);
+    //glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 
     // Init the display lists.
     _nextDisplayList = glGenLists(MaxDisplayLists);
@@ -132,9 +152,17 @@ void RenderSystem::update(float dt) {
     // Clear.
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
+    glPushMatrix();
 
     // Position the camera.
     getEngine().getCameraSystem().lookThroughCamera();
+
+    // Draw the light.
+    glDisable(GL_LIGHTING);
+    float sunPosition[] = {0.0, SunHeightFactor * MaximumHeight, 0.0, 1.0};
+    glLightfv(GL_LIGHT0, GL_POSITION, sunPosition);
+    glEnable(GL_LIGHTING);
+
 
     // Draw the ground.
     glCallList(_groundDisplayList);
@@ -145,15 +173,32 @@ void RenderSystem::update(float dt) {
     // Draw the center tower.
     glCallList(getEngine().getTower().displayList);
 
-    glTranslatef(1.0, 1.0, -15.0);
+    // Draw the objective boid.
+    glPushMatrix();
+        // Objective boid color.
+        glColor4f(BoidColorRed, BoidColorGreen, BoidColorBlue,
+                ObjectiveBoidTransparency);
+
+        // Translate the objective boid.
+        glext::glTranslatep(getEngine().getObjectiveBoid().position);
+
+        // Rotate the objective boid.
+        glext::glRotatea(getEngine().getObjectiveBoid().orientation);
+
+        glCallList(getEngine().getObjectiveBoid().displayList);
+    glPopMatrix();
+
+    // Boid color.
+    glColor3f(BoidColorRed, BoidColorGreen, BoidColorBlue);
 
     // Draw the boids.
     for(Engine::BoidVector::iterator it = getEngine().getBoids().begin();
             it != getEngine().getBoids().end(); ++it) {
-        glCallList(it->displayList);
+        //glCallList(it->displayList);
     }
 
     // Swap the buffers.
+    glPopMatrix();
     glfwSwapBuffers(getEngine().getWindow());
 }
 

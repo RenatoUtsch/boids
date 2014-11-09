@@ -61,6 +61,56 @@ public:
     }
 
     /**
+     * Constructs the euler angles from a direction vector.
+     * @param direction The direction vector.
+     * @param up up vector.
+     **/
+    EulerAngles(Vector direction, Vector up) {
+        direction.normalize();
+        up.normalize();
+        Vector w0 = Vector(-direction.y, direction.x, 0.0);
+        //Vector u0 = Vector::cross(w0, direction);
+
+        float alphaInRads = asin(direction.z);
+        float betaInRads = asin(Vector::dot(w0, up));
+
+        alpha = -toDegrees(alphaInRads);
+        beta = toDegrees(betaInRads);
+        gamma = 0.0;
+
+        /*
+        float alphaInRads = asin(direction.y);
+
+        alpha = toDegrees(alphaInRads);
+        beta = toDegrees(asin(direction.x / cos(alphaInRads)));
+        gamma = 0.0;
+        */
+
+/*
+        Vector dirYZ = Vector(0.0, direction.y, direction.z).normalize();
+        Vector dirXZ = Vector(direction.x, 0.0, direction.z).normalize();
+
+        alpha = std::acos(Vector::dot(dirYZ, Vector(0.0, 0.0, 1.0)));
+        beta = std::acos(Vector::dot(dirXZ, Vector(1.0, 0.0, 0.0)));
+        gamma = 0.0;
+        */
+/*
+        alpha = std::asin(direction.z);
+        beta = 0.0;
+        gamma = std::atan2(direction.y, direction.x);
+        */
+/*
+        Vector wingD = Vector(-direction.y, direction.x, 0);
+        Vector up0 = Vector::cross(wingD, direction);
+
+        alpha = std::asin(direction.z);
+        beta = 0.0;
+        gamma = Vector::dot(wingD, up) / Vector::dot(up0, up)
+                / std::abs(wingD.module()) * std::abs(up0.module());
+                */
+    }
+
+    /**
      * Converts the euler angles to quaternions and returns the quaternion.
      **/
     inline Quaternion toQuaternion() const {
@@ -81,10 +131,13 @@ public:
      * the orientation.
      **/
     inline Vector toVector() const {
-        float cos_beta = cos(beta);
-        return Vector(cos(alpha) * cos_beta,
-                sin(alpha) * cos_beta,
-                sin(beta));
+        float alphaRads = toRads(alpha);
+        float betaRads = toRads(beta);
+        float cosAlpha = cos(alphaRads);
+
+        return Vector(cosAlpha * sin(betaRads),
+                sin(alphaRads),
+                -cosAlpha * cos(betaRads));
     }
 
     /// += operator for euler angles.

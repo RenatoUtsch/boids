@@ -35,6 +35,7 @@ void util::drawCircle(float radius) {
     float angleIncrement = 2 * M_PI / CurvedShapeFidelity;
 
     glBegin(GL_TRIANGLE_FAN);
+        glNormal3f(0.0, 0.0, -1.0);
         for(int i = 0; i < CurvedShapeFidelity; ++i) {
             glVertex3f(radius * cos(t), radius * sin(t), 0.0);
             t += angleIncrement;
@@ -57,6 +58,7 @@ void util::drawPyramid(float height, float diagonalSize, float diagonalAngle) {
 
     // create the base.
     glBegin(GL_QUADS);
+        glNormal3f(0.0, 0.0, 1.0);
         glVertex3f(diagonalSizeX, diagonalSizeY, 0.0);
         glVertex3f(-diagonalSizeX, diagonalSizeY, 0.0);
         glVertex3f(-diagonalSizeX, -diagonalSizeY, 0.0);
@@ -66,9 +68,11 @@ void util::drawPyramid(float height, float diagonalSize, float diagonalAngle) {
     // Create the triangles that compose the body of the pyramid.
     glBegin(GL_TRIANGLE_FAN);
         // Vertex at the top of the pyramid.
+        glNormal3f(0.0, 0.0, 1.0);
         glVertex3f(0.0, 0.0, -height);
 
         // Top triangle.
+        glNormal3f(0.0, 1.0, 0.0);
         glVertex3f(-diagonalSizeX, diagonalSizeY, 0.0);
         glVertex3f(diagonalSizeX, diagonalSizeY, 0.0);
 

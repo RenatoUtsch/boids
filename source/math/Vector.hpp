@@ -74,22 +74,27 @@ public:
 
     /**
      * Scale the vector by the given factor.
+     * Returns the vector for convenience.
      * @param factor How much to multiply the vector.
      **/
-    inline void scale(float factor) {
+    inline Vector &scale(float factor) {
         this->x *= factor;
         this->y *= factor;
         this->z *= factor;
+
+        return *this;
     }
 
     /**
      * Divides the vector by the given factor.
+     * Returns the vector for convenience.
      * @param factor How much to divide the vector.
      **/
-    inline void divScale(float factor) {
+    inline Vector &divScale(float factor) {
         this->x /= factor;
         this->y /= factor;
         this->z /= factor;
+        return *this;
     }
 
     /**
@@ -102,12 +107,14 @@ public:
     }
 
     /**
-     * Normalizes the vector.
+     * Normalizes the vector. Returns it for convenience.
      **/
-    inline void normalize() {
+    inline Vector &normalize() {
         double mod = this->module();
         if(mod)
             this->divScale(mod);
+
+        return *this;
     }
 
     /**

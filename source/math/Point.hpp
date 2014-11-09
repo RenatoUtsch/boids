@@ -26,6 +26,7 @@
 #ifndef MATH_POINT_HPP
 #define MATH_POINT_HPP
 
+#include <iostream>
 #include "../glfw.hpp"
 #include "Vector.hpp"
 
@@ -124,6 +125,12 @@ inline bool operator!=(const Point &left, const Point &right) {
     return !operator==(left, right);
 }
 
+/// Operator overloading for writing points to output streams.
+inline std::ostream &operator<<(std::ostream &os, const Point &obj) {
+    os << obj.x << "i + " << obj.y << "j + " << obj.z << "k";
+    return os;
+}
+
 namespace glext {
     /**
      * Specify an OpenGL vertex using a Point class.
@@ -131,6 +138,14 @@ namespace glext {
      **/
     inline void glVertexp(const Point &point) {
         glVertex4f(point.x, point.y, point.z, point.h);
+    }
+
+    /**
+     * Translate the to the point position.
+     * @param opint The (p)oint to translate to.
+     **/
+    inline void glTranslatep(const Point &point) {
+        glTranslatef(point.x, point.y, point.z);
     }
 }
 

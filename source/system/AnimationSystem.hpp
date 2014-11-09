@@ -29,6 +29,7 @@
 #define SYSTEM_ANIMATION_SYSTEM_HPP
 
 #include "System.hpp"
+#include "../gameObject/Boid.hpp"
 #include "../defs.hpp"
 #include "../util/NonCopyable.hpp"
 #include <cstdlib>
@@ -76,7 +77,12 @@ class AnimationSystem : public System, public NonCopyable {
     void destroyTowerDisplayList();
 
     /**
-     * Updates the boids.
+     * Updates a single boid.
+     **/
+    void updateBoid(Boid &boid);
+
+    /**
+     * Updates all the boids, including the objective boid.
      **/
     void updateBoids();
 

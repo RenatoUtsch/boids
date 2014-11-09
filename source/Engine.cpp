@@ -70,6 +70,42 @@ void Engine::initSystems() {
 }
 
 void Engine::initObjects() {
+    // Position the objective boid randomly in the center of the map.
+    /*
+    float boidPosX = std::rand() % ((int) GroundSize) - GroundSize / 2;
+    float boidPosY = std::rand() % ((int)(MaximumHeight - MinimumHeight) / 2)
+        + MinimumHeight;
+    float boidPosZ = std::rand() % ((int) GroundSize) - GroundSize / 2;
+    */
+    float boidPosX = 100.0;
+    float boidPosY = TowerHeight;
+    float boidPosZ = 500.0;
+
+    // Do not position the boid in the tower.
+    if(std::abs(boidPosX) < TowerBaseRadius)
+        boidPosX += 2 * TowerBaseRadius;
+    if(std::abs(boidPosZ) < TowerBaseRadius)
+        boidPosZ += 2 * TowerBaseRadius;
+
+    // Create the position point.
+    Point objBoidPos = Point(boidPosX, boidPosY, boidPosZ);
+    std::cout << objBoidPos << std::endl;
+
+    // Random orientation.
+    EulerAngles objBoidOrient = EulerAngles(0.0, 90.0, 0.0);
+    //EulerAngles objBoidOrient = EulerAngles(0.0, 0.0, 0.0);
+
+    // Velocity of the objective boid.
+    Vector objBoidVel = objBoidOrient.toVector();
+    objBoidVel.normalize().scale(BoidInitialVelocity);
+
+    std::cout << EulerAngles(90.0, 45.0, 0).toVector() << std::endl;
+
+    // Add the objective boid moving to the center of the map.
+    _objectiveBoid = new Boid(objBoidPos, objBoidVel, objBoidOrient,
+            getAnimationSystem().getRandomBoidDisplayList(),
+            getAnimationSystem().getRandomBoidGoingUp());
+
     // Add a boid.
     _boids.push_back(Boid(Point(10, 10, -10), Vector(), EulerAngles(),
                 getAnimationSystem().getRandomBoidDisplayList(),
@@ -91,6 +127,10 @@ void Engine::terminateSystems() {
 }
 
 void Engine::terminateObjects() {
+    // Remove the objective boid.
+    delete _objectiveBoid;
+    _objectiveBoid = 0;
+
     // Remove all the boids.
     _boids.clear();
 
@@ -146,7 +186,7 @@ void Engine::mainLoop() {
 }
 
 Engine::Engine()
-        : _window(0), _tower(0) {
+        : _window(0), _objectiveBoid(0), _tower(0) {
     // Reserve space for the boids.
     _boids.reserve(ReservedBoids);
 

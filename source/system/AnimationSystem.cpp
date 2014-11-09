@@ -48,15 +48,13 @@ void AnimationSystem::createBoidDisplayList() {
     // accordingly. The boid will be looking in the  direction.
     for(unsigned i = _beginBoidDisplayList; i != _endBoidDisplayList; ++i) {
         glNewList(i, GL_COMPILE);
-            // Color of the boid.
-            glColor3f(BoidColorRed, BoidColorGreen, BoidColorBlue);
-
             // Draw the body.
             glPushMatrix();
                 // Scale the circle to make an ellipsis.
                 glScalef(1.0, 1.0, BoidBodyScale);
 
                 GLUquadricObj *quadObj = gluNewQuadric();
+                gluQuadricNormals(quadObj, GLU_SMOOTH);
                 gluSphere(quadObj, BoidBodyRadius, CurvedShapeFidelity,
                         CurvedShapeFidelity);
             glPopMatrix();
@@ -122,6 +120,7 @@ void AnimationSystem::createTowerDisplayList() {
 
             // Draw the tower.
             GLUquadricObj *quadObj = gluNewQuadric();
+            gluQuadricNormals(quadObj, GLU_SMOOTH);
             gluCylinder(quadObj, TowerBaseRadius, 0.0, TowerHeight,
                     CurvedShapeFidelity, CurvedShapeFidelity);
         glPopMatrix();
@@ -146,32 +145,39 @@ void AnimationSystem::terminate() {
     destroyTowerDisplayList();
 }
 
+void AnimationSystem::updateBoid(Boid &boid) {
+    // Update the boids by adding 1 to the display list until it is at the end,
+    // when we'll start to go down instead.
+    if(boid.displayListGoingUp) {
+        if(boid.displayList == _endBoidDisplayList - 1) {
+            // Start going down.
+            boid.displayListGoingUp = false;
+            --boid.displayList;
+        }
+        else {
+            ++boid.displayList;
+        }
+    }
+    else {
+        if(boid.displayList == _beginBoidDisplayList) {
+            // Start going up.
+            boid.displayListGoingUp = true;
+            ++boid.displayList;
+        }
+        else {
+            --boid.displayList;
+        }
+    }
+}
+
 void AnimationSystem::updateBoids() {
+    // update the objective boid.
+    updateBoid(getEngine().getObjectiveBoid());
+
     // Update each boid.
     for(Engine::BoidVector::iterator it = getEngine().getBoids().begin();
             it != getEngine().getBoids().end(); ++it) {
-        // Update the boids by adding 1 to the display list until it is at the end,
-        // when we'll start to go down instead.
-        if(it->displayListGoingUp) {
-            if(it->displayList == _endBoidDisplayList - 1) {
-                // Start going down.
-                it->displayListGoingUp = false;
-                --it->displayList;
-            }
-            else {
-                ++it->displayList;
-            }
-        }
-        else {
-            if(it->displayList == _beginBoidDisplayList) {
-                // Start going up.
-                it->displayListGoingUp = true;
-                ++it->displayList;
-            }
-            else {
-                --it->displayList;
-            }
-        }
+        updateBoid(*it);
     }
 }
 

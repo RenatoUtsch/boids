@@ -67,6 +67,9 @@ private:
     /// y position of the cursor.
     double _cursorYPos;
 
+    /// The objective boid.
+    Boid *_objectiveBoid;
+
     /// The boids.
     std::vector<Boid> _boids;
 
@@ -189,6 +192,13 @@ public:
      **/
     inline GLFWwindow *getWindow() {
         return _window;
+    }
+
+    /**
+     * Returns the objective boid.
+     **/
+    inline Boid &getObjectiveBoid() {
+        return *_objectiveBoid;
     }
 
     /**

@@ -100,6 +100,9 @@ const float BoidColorGreen = 0.6;
 /// Blue (from rgb) color of the boids.
 const float BoidColorBlue = 0.0;
 
+/// Transparency of the objective boid.
+const float ObjectiveBoidTransparency = 0.3;
+
 /// The radius of the body of the boid.
 const float BoidBodyRadius = 1.5;
 
@@ -120,6 +123,9 @@ const float BoidWingBaseAngle = 75.0;
 /// The bigger this is, the closer the wings are to the body.
 const float BoidWingDistanceFix = 0.6;
 
+/// Module of the initial velocity of the objective boid.
+const float BoidInitialVelocity = 0.01;
+
 /// The fidelity of curved shape rendering (higher values results in
 /// smoother shapes).
 const int CurvedShapeFidelity = 50;
@@ -134,7 +140,7 @@ const int ReservedBoids = 50;
 const int InitialBoidCount = 5;
 
 /// How much behind the first boid the camera is.
-const float InitialCameraDistance = 5.0;
+const float InitialCameraDistance = 20.0;
 
 /// How fast the camera moves. This is just a default value.
 const double DefaultCameraMovementSpeed = 100.0;

@@ -82,6 +82,22 @@ private:
     /// If the right strafe key is being pressed.
     bool _holdingRightStrafe;
 
+    /**
+     * orients the camera in the boids direction.
+     **/
+    void orientCameraToTheBoids();
+
+     /**
+      * Position the camera behind the boids.
+      **/
+     void positionCameraBehindTheBoids();
+
+     /**
+      * Moves the camera.
+      * @param dt how much time to move.
+      **/
+     void moveCamera(float dt);
+
 public:
     CameraSystem();
     void init();

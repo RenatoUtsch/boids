@@ -45,4 +45,11 @@ inline double toRads(double degrees) {
     return degrees * (M_PI / 180.0);
 }
 
+/**
+ * Converts from radians to degrees.
+ **/
+inline double toDegrees(double rads) {
+    return rads * (180.0 / M_PI);
+}
+
 #endif // !MATH_MATH_HPP

@@ -49,7 +49,25 @@ void CameraSystem::terminate() {
 
 }
 
-void CameraSystem::update(float dt) {
+void CameraSystem::orientCameraToTheBoids() {
+    Vector direction = getEngine().getObjectiveBoid().position - _position;
+    std::cout << "pos " << getEngine().getObjectiveBoid().position << std::endl;
+    std::cout << "dir " << direction << std::endl;
+
+    _orientation = EulerAngles(direction, Vector(0.0, 1.0, 0.0));
+    std::cout << "orient" << _orientation << std::endl;
+}
+
+void CameraSystem::positionCameraBehindTheBoids() {
+    Vector direction = getEngine().getObjectiveBoid().orientation.toVector();
+    direction *= InitialCameraDistance;
+
+    _position.x = getEngine().getObjectiveBoid().position.x - direction.x;
+    _position.y = getEngine().getObjectiveBoid().position.y - direction.y;
+    _position.z = getEngine().getObjectiveBoid().position.z - direction.z;
+}
+
+void CameraSystem::moveCamera(float dt) {
     // Move the camera only if it is movable.
     if(!_cameraMovable)
         return;
@@ -107,6 +125,19 @@ void CameraSystem::update(float dt) {
         _position.y = MaximumHeight;
 }
 
+void CameraSystem::update(float dt) {
+    // Move the camera.
+    moveCamera(dt);
+
+    // If the camera has to look to the boids, look.
+    if(_cameraType == TowerCamera || _cameraType == ParallelCamera)
+        orientCameraToTheBoids();
+
+    // If is to position the camera behind the boids, position.
+    if(_cameraType == ParallelCamera || _cameraType == FixedDistanceCamera)
+        positionCameraBehindTheBoids();
+}
+
 void CameraSystem::lookThroughCamera() {
     // Rotate the camera to the location in space.
     glRotatef(_orientation.alpha, 1.0, 0.0, 0.0); // up and down
@@ -123,29 +154,46 @@ void CameraSystem::setCameraType(CameraType camera) {
             // Set camera properties.
             _cameraMovable = true;
             _cameraOrientable = true;
+            _cameraType = FreeCamera;
+
            break;
 
         case TowerCamera:
             // Set camera properties.
             _cameraMovable = false;
             _cameraOrientable = false;
+            _cameraType = TowerCamera;
 
             // Set the position as in the top of the tower.
             _position.x = 0.0;
             _position.y = TowerHeight + TowerCameraDistance;
             _position.z = 0.0;
+
+            // Look at the boids.
+            orientCameraToTheBoids();
+
             break;
 
         case ParallelCamera:
             // Set camera properties.
             _cameraMovable = false;
             _cameraOrientable = false;
+            _cameraType = ParallelCamera;
+
+            // Look at the boids.
+            orientCameraToTheBoids();
+
             break;
 
         case FixedDistanceCamera:
             // Set camera properties.
             _cameraMovable = false;
             _cameraOrientable = true;
+            _cameraType = FixedDistanceCamera;
+
+            // Look at the boids.
+            orientCameraToTheBoids();
+
             break;
     }
 }
