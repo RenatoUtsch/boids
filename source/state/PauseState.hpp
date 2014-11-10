@@ -43,7 +43,10 @@ public:
     }
 
     void load() { }
-    void init() { }
+    void init() {
+        // Show the cursor again.
+        glfwSetInputMode(getEngine().getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }
 
     void input() {
         double xpos, ypos;
@@ -62,7 +65,11 @@ public:
         getEngine().getRenderSystem().update(alpha);
     }
 
-    void cleanUp() { }
+    void cleanUp() {
+        // Hide the cursor again.
+        glfwSetInputMode(getEngine().getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
+
     void unload() { }
 
     void keyEvent(GLFWwindow *window, int key, int scancode, int action,

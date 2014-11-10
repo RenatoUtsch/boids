@@ -31,6 +31,25 @@
 #include "System.hpp"
 
 class CollisionSystem : public System {
+    /**
+     * Tries to restore the boids to their original position.
+     **/
+    void restoreBoidsPosition();
+
+    /**
+     * Calculates the collision with the tower.
+     **/
+    void calculateCollisionWithTower();
+
+    /**
+     * Calculates the collision with the ground.
+     **/
+    void calculateCollisionWithGround();
+
+    /**
+     * Calculates the collision with the ceiling.
+     **/
+    void calculateCollisionWithCeiling();
 
     /**
      * Calculates the collision between follow boids.

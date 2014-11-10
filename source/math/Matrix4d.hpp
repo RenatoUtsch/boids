@@ -120,6 +120,9 @@ public:
 };
 
 namespace glext {
+    /**
+     * Multiplies the current matrix by the given matrix.
+     **/
     inline void glMultMatrixm(const Matrix4d &matrix) {
         glMultMatrixf(matrix._data);
     }

@@ -69,7 +69,7 @@ const int MaxFps = 60;
 const int NumBoidDisplayLists = MaxFps / 2;
 
 /// Minimum height the boids can get.
-const float MinimumHeight = 10.0;
+const float MinimumHeight = 20.0;
 
 /// Maximum height the boids can get.
 const float MaximumHeight = 500.0;
@@ -278,6 +278,9 @@ const int BehindCameraToggle = GLFW_KEY_4;
 /// sun.
 const float SunHeightFactor = 1.5;
 
+/// How much lower from the sun height the light is.
+const float LightHeight = 5.0;
+
 /// Red color of the sun.
 const float SunColorRed = 1.0;
 
@@ -296,16 +299,50 @@ const int CloseKey = GLFW_KEY_ESCAPE;
 /// Pause key.
 const int PauseKey = GLFW_KEY_P;
 
-// Debug state mouse button.
+/// Debug state mouse button.
 const int DebugMouseButton = GLFW_MOUSE_BUTTON_RIGHT;
 
-// Mouse button to step when on debug state.
+/// Mouse button to step when on debug state.
 const int StepMouseButton = GLFW_MOUSE_BUTTON_LEFT;
 
-// Key to add a boid.
+/// Key to add a boid.
 const int AddBoidKey = GLFW_KEY_EQUAL;
 
-// Key to remove a random boid.
+/// Key to remove a random boid.
 const int RemoveBoidKey = GLFW_KEY_MINUS;
+
+/// Red (from RGB) component of the shadow color. Between 0.0 and 1.0.
+const float ShadowColorRed = 0.2;
+
+/// Green (from RGB) component of the shadow color. Between 0.0 and 1.0.
+const float ShadowColorGreen = 0.2;
+
+/// Blue (from RGB) component of the shadow color. Between 0.0 and 1.0.
+const float ShadowColorBlue = 0.2;
+
+/// Red (from RGB) component of the fog. Between 0.0 and 1.0.
+const float FogColorRed = 0.5;
+
+/// Green (from RGB) component of the fog. Between 0.0 and 1.0.
+const float FogColorGreen = 0.5;
+
+/// Blue (from RGB) component of the fog. Between 0.0 and 1.0.
+const float FogColorBlue = 0.5;
+
+/// Fog density.
+const float FogDensity = 0.35;
+
+/// Fog start depth.
+const float FogStart = 200.0;
+
+/// Fog end depth.
+const float FogEnd = 500.0;
+
+/// Key to toggle fog.
+const int ToggleFogKey = GLFW_KEY_F;
+
+/// Toggles the different orders of rotation and translation
+/// of the boids. Use 1 and 0.
+#define BOIDS_ROTATE_AFTER 1
 
 #endif // !DEFS_HPP

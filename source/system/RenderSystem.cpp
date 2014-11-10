@@ -29,6 +29,7 @@
 #include "../Engine.hpp"
 #include "../defs.hpp"
 #include "../util/draw.hpp"
+#include "../math/Plane.hpp"
 
 void RenderSystem::createGround() {
     // Get the next display list.
@@ -101,6 +102,86 @@ void RenderSystem::destroySun() {
     glDeleteLists(_sunDisplayList, 1);
 }
 
+void RenderSystem::drawShadow() {
+    glDisable(GL_LIGHT0);
+
+    // Shadow's color.
+    glColor3f(ShadowColorRed, ShadowColorGreen, ShadowColorBlue);
+    glPushMatrix();
+        glTranslatef(0.0, 1.0, 0.0);
+        glScalef(1.0, 0.0, 1.0); // Collapse the y-value.
+
+        // Draw the boids again.
+        drawObjectiveBoid();
+        drawFollowBoids();
+    glPopMatrix();
+
+    glEnable(GL_LIGHT0);
+}
+
+void RenderSystem::drawObjectiveBoid() {
+    // Objective boid color.
+    glColor3f(ObjectiveBoidColorRed, ObjectiveBoidColorGreen,
+            ObjectiveBoidColorBlue);
+
+    // Translate the objective boid and the other boids.
+    glext::glTranslatep(getEngine().getObjectiveBoid().position);
+
+    // Get the objective boid rotation.
+    Matrix4d rotation = Vector::toRotationMatrix(
+            getEngine().getObjectiveBoid().direction,
+            getEngine().getObjectiveBoid().up);
+
+    glPushMatrix();
+        // Rotate the objective boid.
+        glext::glMultMatrixm(rotation);
+
+        glCallList(getEngine().getObjectiveBoid().displayList);
+    glPopMatrix();
+}
+
+void RenderSystem::drawFollowBoids() {
+    // Get the objective boid rotation.
+    Matrix4d rotation = Vector::toRotationMatrix(
+            getEngine().getObjectiveBoid().direction,
+            getEngine().getObjectiveBoid().up);
+
+    glColor3f(BoidColorRed, BoidColorGreen, BoidColorBlue);
+    for(Engine::BoidVector::iterator it = getEngine().getBoids().begin();
+            it != getEngine().getBoids().end(); ++it) {
+        glPushMatrix();
+            // Rotate and translate.
+#if BOIDS_ROTATE_AFTER
+                glext::glMultMatrixm(rotation);
+                glext::glTranslatep(it->position);
+#else
+                glext::glTranslatep(it->position);
+                glext::glMultMatrixm(rotation);
+#endif
+
+            glCallList(it->displayList);
+        glPopMatrix();
+    }
+
+}
+
+void RenderSystem::setUpFog() {
+    if(_fogEnabled) {
+        std::cout << "fog!" << std::endl;
+        glClearColor(FogColorRed, FogColorGreen, FogColorBlue, 1.0);
+        glEnable(GL_FOG);
+    }
+    else {
+        glClearColor(BackgroundColorRed, BackgroundColorGreen,
+                BackgroundColorBlue, 1.0);
+        glDisable(GL_FOG);
+    }
+}
+
+RenderSystem::RenderSystem() : _toggleFog(false), _fogEnabled(false) {
+
+}
+
 void RenderSystem::init() {
     // Blue background.
     glClearColor(BackgroundColorRed, BackgroundColorGreen, BackgroundColorBlue,
@@ -122,13 +203,23 @@ void RenderSystem::init() {
     // Enable 3D things.
     glEnable(GL_DEPTH_TEST);
 
-    // Configurating the light.
+    // Configuring the light.
     float ambientLight[] = {1.0f, 1.0f, 1.0f, 1.0f};
     float diffuseLight[] = {1.0, 1.0, 1.0, 1.0};
     float specularLight[] = {1.0, 1.0, 1.0, 1.0};
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
     glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
+
+    // Configuring the fog.
+    float fogColor[] = {FogColorRed, FogColorGreen, FogColorBlue, 1.0};
+    glFogi(GL_FOG_MODE, GL_LINEAR);
+    glFogfv(GL_FOG_COLOR, fogColor);
+    glFogf(GL_FOG_DENSITY, FogDensity);
+    glHint(GL_FOG_HINT, GL_NICEST);
+    glFogf(GL_FOG_START, FogStart);
+    glFogf(GL_FOG_END, FogEnd);
+    setUpFog();
 
     // Colors.
     glEnable(GL_COLOR_MATERIAL);
@@ -149,6 +240,17 @@ void RenderSystem::terminate() {
 }
 
 void RenderSystem::update(float dt) {
+    // Fog things.
+    if(_toggleFog) {
+        _toggleFog = false;
+        if(_fogEnabled)
+            _fogEnabled = false;
+        else
+            _fogEnabled = true;
+
+        setUpFog();
+    }
+
     // Clear.
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -159,13 +261,16 @@ void RenderSystem::update(float dt) {
 
     // Draw the light.
     glDisable(GL_LIGHTING);
-    float sunPosition[] = {0.0, SunHeightFactor * MaximumHeight - 5.0, 0.0, 1.0};
+    float sunPosition[] = {0.0, SunHeightFactor * MaximumHeight - LightHeight,
+        0.0, 1.0};
     glLightfv(GL_LIGHT0, GL_POSITION, sunPosition);
     glEnable(GL_LIGHTING);
 
-
     // Draw the ground.
     glCallList(_groundDisplayList);
+
+    // Draw the shadows.
+    drawShadow();
 
     // Draw the sun.
     glCallList(_sunDisplayList);
@@ -173,32 +278,13 @@ void RenderSystem::update(float dt) {
     // Draw the center tower.
     glCallList(getEngine().getTower().displayList);
 
-    // Draw the objective boid.
+    // Draw the objective boid. MUST be drawn before the other boids.
+    drawObjectiveBoid();
 
-    // Objective boid color.
-    glColor3f(ObjectiveBoidColorRed, ObjectiveBoidColorGreen,
-            ObjectiveBoidColorBlue);
+    // Draw the other boids.
+    drawFollowBoids();
 
-    // Translate the objective boid.
-    glext::glTranslatep(getEngine().getObjectiveBoid().position);
-
-    // Rotate the objective boid.
-    glext::glMultMatrixm(Vector::toRotationMatrix(
-            getEngine().getObjectiveBoid().direction,
-            getEngine().getObjectiveBoid().up));
-
-    glCallList(getEngine().getObjectiveBoid().displayList);
-
-    // Draw the boids. Their position is relative to the objective boid.
-    glColor3f(BoidColorRed, BoidColorGreen, BoidColorBlue);
-    for(Engine::BoidVector::iterator it = getEngine().getBoids().begin();
-            it != getEngine().getBoids().end(); ++it) {
-        glPushMatrix();
-            glext::glTranslatep(it->position);
-            glCallList(it->displayList);
-        glPopMatrix();
-    }
-
+    // Draw the boids. Their position is relative to the objective boid
     // Swap the buffers.
     glPopMatrix();
     glfwSwapBuffers(getEngine().getWindow());
@@ -209,6 +295,7 @@ void RenderSystem::framebufferSizeEvent(GLFWwindow *window, int width,
     // Set up the OpenGL projection.
     glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
     gluPerspective(FrustumFieldOfView, (GLfloat) width / height, FrustumNear,
             FrustumFar);
     glMatrixMode(GL_MODELVIEW);

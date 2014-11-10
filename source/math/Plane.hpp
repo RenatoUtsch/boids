@@ -25,36 +25,30 @@
  * THE SOFTWARE.
  */
 
-#ifndef GAMEOBJECT_FOLLOWBOID_HPP
-#define GAMEOBJECT_FOLLOWBOID_HPP
+#ifndef MATH_PLANE_HPP
+#define MATH_PLANE_HPP
 
-#include "Boid.hpp"
+#include "math.hpp"
+#include "Point.hpp"
+#include "Vector.hpp"
 
 /**
- * A boid that follows the objective boid.
+ * Finds the A, B, C and D coefficients of the plane given 3 vertices
+ * in it.
+ * Saves in the vector given as last parameter.
  **/
-struct FollowBoid : public Boid {
-    /**
-     * This point is used by the collision system to restore the boid to his
-     * original relative position after avoiding a collision.
-     **/
-    Point oldPosition;
+void findPlaneEquation(const Point &p0, const Point &p1, const Point &p2,
+        float planeOut[4]) {
+    // Two vectors are needed to find the intersection.
+    Vector v0 = p1 - p0;
+    Vector v1 = p2 - p0;
 
-    /**
-     * Constructor.
-     * Creates the boid with the given position (relative to the objective boid).
-     * The objective boid must already have been created.
-     **/
-    FollowBoid(unsigned _displayList, bool _displayListGoingUp,
-            Point _position, float _speed,
-            Vector _direction, Vector _up = Vector(0.0, 1.0, 0.0))
-        : Boid(_displayList, _displayListGoingUp, _position, _speed,
-                _direction, _up), oldPosition(_position) {
+    // Find the intersection and save A, B, C and D of the plane's equation.
+    Vector cross = Vector::cross(v0, v1);
+    planeOut[0] = cross.x;
+    planeOut[1] = cross.y;
+    planeOut[2] = cross.z;
+    planeOut[3] = -(planeOut[0] * p0.x + planeOut[1] * p0.y + planeOut[2] * p0.z);
+}
 
-    }
-
-    Point getAbsolutePosition() const;
-    Point getRelativePosition() const;
-};
-
-#endif // !GAMEOBJECT_FOLLOWBOID_HPP
+#endif // !MATH_PLANE_HPP

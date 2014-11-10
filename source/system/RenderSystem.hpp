@@ -30,7 +30,6 @@
 
 #include "System.hpp"
 #include "../glfw.hpp"
-#include "../math/Vector.hpp"
 
 class RenderSystem : public System {
     /// Next display list that is not used.
@@ -41,6 +40,12 @@ class RenderSystem : public System {
 
     /// Sun display list.
     unsigned _sunDisplayList;
+
+    /// If is to toggle fog.
+    bool _toggleFog;
+
+    /// If fog is enabled.
+    bool _fogEnabled;
 
     /// Creates the ground.
     void createGround();
@@ -54,10 +59,30 @@ class RenderSystem : public System {
     /// Destroys the sun.
     void destroySun();
 
+    /// Draws the shadow.
+    void drawShadow();
+
+    /// Draws the objective boid.
+    void drawObjectiveBoid();
+
+    /// Draws the follow boids.
+    void drawFollowBoids();
+
+    /// sets up fog by the _fogEnabled variable.
+    void setUpFog();
+
 public:
+    RenderSystem();
     void init();
     void terminate();
     void update(float dt);
+
+    /**
+     * Toggles fog.
+     **/
+    inline void toggleFog() {
+        _toggleFog = true;
+    }
 
     /**
      * Returns the next display list.

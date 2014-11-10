@@ -94,6 +94,11 @@ public:
                     // Remove a random boid.
                     getEngine().removeRandomBoid();
                     break;
+
+                case ToggleFogKey:
+                    // Toggle fog.
+                    getEngine().getRenderSystem().toggleFog();
+                    break;
             }
         }
 
