@@ -167,7 +167,6 @@ void RenderSystem::drawFollowBoids() {
 
 void RenderSystem::setUpFog() {
     if(_fogEnabled) {
-        std::cout << "fog!" << std::endl;
         glClearColor(FogColorRed, FogColorGreen, FogColorBlue, 1.0);
         glEnable(GL_FOG);
     }

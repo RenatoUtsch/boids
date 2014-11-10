@@ -243,7 +243,7 @@ void Engine::addBoid() {
     const float boidSpace2 = 2 * BoidSpace;
     const int objectiveVectors = 9; // Number of vectors that can be used with obj.
     const int followVectors = 13; // Number of vectors that can be used with follow.
-/*
+
     Vector directions[] = {
         // Used also by obj when inserting a new boid relative to
         // obj (objectiveBoid).
@@ -263,7 +263,7 @@ void Engine::addBoid() {
         Vector(-boidSpace2, boidSpace2,     0.0),
         Vector(boidSpace2,  boidSpace2,     0.0)
     };
-*/
+
     // Number of existing boids.
     size_t num = _boids.size();
 
@@ -284,13 +284,16 @@ void Engine::addBoid() {
         }
 
         // Choose a random direction.
-        //size_t dir = rand() % numVectors;
+        size_t dir = rand() % numVectors;
+        /*
         Vector direction = Vector(rand() % 1000, rand() % 1000, rand() % 1000);
         direction.normalize();
         direction *= boidSpace2;
+        */
 
         // Get the new position.
-        Point pos = boid->getAbsolutePosition() - direction - boid->direction * BoidSpace;
+        Point pos = boid->getRelativePosition() + directions[dir];
+        //Point pos = boid->getRelativePosition() - direction - boid->direction * BoidSpace;
 
         // Check the distances to all the other boids. If we find a boid
         // that is at a distance smaller tan boidSpace2 from pos, try again.
@@ -298,7 +301,7 @@ void Engine::addBoid() {
         // no collision will happen.
         bool boidFound = num ? false : true;
         for(size_t i = 0; i < num; ++i) {
-            if(Point::distance(pos, _boids[i].getAbsolutePosition())
+            if(Point::distance(pos, _boids[i].getRelativePosition())
                     > boidSpace2) {
                 boidFound = true;
                 break;
@@ -311,8 +314,7 @@ void Engine::addBoid() {
         // getRelativePosition() returns (0.0, 0.0, 0.0) if the boid is the
         // objective boid.
         _boids.push_back(FollowBoid(getAnimationSystem().getRandomBoidDisplayList(),
-                getAnimationSystem().getRandomBoidGoingUp(),
-                boid->getRelativePosition() - direction - boid->direction * BoidSpace,
+                getAnimationSystem().getRandomBoidGoingUp(), pos,
                 boid->speed, boid->direction, boid->up));
 
         break;
