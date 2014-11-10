@@ -321,13 +321,13 @@ const float ShadowColorGreen = 0.2;
 const float ShadowColorBlue = 0.2;
 
 /// Red (from RGB) component of the fog. Between 0.0 and 1.0.
-const float FogColorRed = 0.5;
+const float FogColorRed = 0.85;
 
 /// Green (from RGB) component of the fog. Between 0.0 and 1.0.
-const float FogColorGreen = 0.5;
+const float FogColorGreen = 0.85;
 
 /// Blue (from RGB) component of the fog. Between 0.0 and 1.0.
-const float FogColorBlue = 0.5;
+const float FogColorBlue = 0.85;
 
 /// Fog density.
 const float FogDensity = 0.35;
