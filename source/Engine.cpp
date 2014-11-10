@@ -67,6 +67,8 @@ void Engine::initSystems() {
     _renderSystem.init();
     _animationSystem.init();
     _cameraSystem.init();
+    _collisionSystem.init();
+    _movementSystem.init();
 }
 
 void Engine::initObjects() {
@@ -85,21 +87,20 @@ void Engine::initObjects() {
     // Create the position point.
     Point objBoidPos = Point(boidPosX, boidPosY, boidPosZ);
 
-    // Random speed.
-    float objBoidSpeed = (rand() % 1000) / 1000;
-
-    // Direction of the objective boid.
-    Vector objBoidDir = Vector(0.0, 0.0, -1.0);
+    // Random direction.
+    Vector objBoidDir = Vector((rand() % 1000) / 1000.0,
+            (rand() % 1000) / 1000.0,
+            (rand() % 1000) / 1000.0);
 
     // Add the objective boid moving to the center of the map.
-    _objectiveBoid = new Boid( getAnimationSystem().getRandomBoidDisplayList(),
+    _objectiveBoid = new ObjectiveBoid(
+            getAnimationSystem().getRandomBoidDisplayList(),
             getAnimationSystem().getRandomBoidGoingUp(),
-            objBoidPos, objBoidSpeed, objBoidDir);
+            objBoidPos, ObjectiveBoidInitialSpeed, objBoidDir);
 
     // Add a boid.
-    _boids.push_back(Boid(getAnimationSystem().getRandomBoidDisplayList(),
-                getAnimationSystem().getRandomBoidGoingUp(),
-                Point(10, 10, -10), objBoidSpeed, objBoidDir));
+    addBoid();
+    addBoid();
 
     // Add a tower.
     _tower = new Tower(getAnimationSystem().getTowerDisplayList());
@@ -113,6 +114,8 @@ void Engine::terminateWindowSystem() {
 void Engine::terminateSystems() {
     _animationSystem.terminate();
     _cameraSystem.terminate();
+    _collisionSystem.terminate();
+    _movementSystem.terminate();
     _renderSystem.terminate();
 }
 
@@ -127,6 +130,28 @@ void Engine::terminateObjects() {
     // Delete the tower.
     delete _tower;
     _tower = 0;
+}
+
+void Engine::updateMiddlePosition() {
+    _middle.x = 0.0;
+    _middle.y = 0.0;
+    _middle.z = 0.0;
+
+    // Sum all the positions of the other boids.
+    for(Engine::BoidVector::iterator it = getEngine().getBoids().begin();
+            it != getEngine().getBoids().end(); ++it) {
+        _middle.x += it->getRelativePosition().x;
+        _middle.y += it->getRelativePosition().y;
+        _middle.z += it->getRelativePosition().z;
+    }
+
+    // Divide by the number of boids, getting the middle of the boids.
+    float size = _boids.size();
+    if(size) {
+        _middle.x /= size;
+        _middle.y /= size;
+        _middle.z /= size;
+    }
 }
 
 void Engine::mainLoop() {
@@ -181,7 +206,7 @@ Engine::Engine()
     _boids.reserve(ReservedBoids);
 
     // Init the rand() system.
-    std::srand(std::time(NULL));
+    std::srand(time(NULL));
 
     // Create the window.
     initWindowSystem();
@@ -212,6 +237,104 @@ int Engine::run() {
     terminateSystems();
 
     return 0;
+}
+
+void Engine::addBoid() {
+    const float boidSpace2 = 2 * BoidSpace;
+    const int objectiveVectors = 9; // Number of vectors that can be used with obj.
+    const int followVectors = 13; // Number of vectors that can be used with follow.
+    const static Vector directions[] = {
+        // Used also by obj when inserting a new boid relative to
+        // obj (objectiveBoid).
+        Vector(-boidSpace2, -boidSpace2,    -boidSpace2),
+        Vector(0.0,         -boidSpace2,    -boidSpace2),
+        Vector(boidSpace2,  -boidSpace2,    -boidSpace2),
+        Vector(-boidSpace2, 0.0,            -boidSpace2),
+        Vector(0.0,         0.0,            -boidSpace2),
+        Vector(boidSpace2,  0.0,            -boidSpace2),
+        Vector(-boidSpace2, boidSpace2,     -boidSpace2),
+        Vector(0.0,         boidSpace2,     -boidSpace2),
+        Vector(boidSpace2,  boidSpace2,     -boidSpace2),
+
+        // Used when adding relative to other follow boids.
+        Vector(-boidSpace2, -boidSpace2,    0.0),
+        Vector(boidSpace2,  -boidSpace2,    0.0),
+        Vector(-boidSpace2, boidSpace2,     0.0),
+        Vector(boidSpace2,  boidSpace2,     0.0)
+    };
+
+    // Number of existing boids.
+    size_t num = _boids.size();
+
+    // Do this until we find a suitable place for the new boid.
+    for(;;) {
+        // Start with the objective boid.
+        const Boid *boid = &getEngine().getObjectiveBoid();
+        size_t numVectors = objectiveVectors;
+
+        // Choose a random existing boid if there is at least 1 follow boid.
+        // Else, stay with the objective boid.
+        if(num) {
+            size_t boidId = rand() % (num + 5);
+            if(boidId < num) {
+                boid = &_boids[boidId];
+                numVectors = followVectors;
+            }
+        }
+
+        // Choose a random direction.
+        size_t dir = rand() % numVectors;
+
+        // Get the new position.
+        Point pos = boid->getAbsolutePosition() + directions[dir];
+
+        // Check the distances to all the other boids. If we find a boid
+        // that is at a distance smaller tan boidSpace2 from pos, try again.
+        // It is guaranteed that in case the boid is the objective boid,
+        // no collision will happen.
+        for(size_t i = 0; i < num; ++i) {
+            if(Point::distance(pos, _boids[i].getAbsolutePosition())
+                    <= boidSpace2) {
+                continue;
+            }
+        }
+
+        // Add the new boid relative to boid.
+        // getRelativePosition() returns (0.0, 0.0, 0.0) if the boid is the
+        // objective boid.
+        _boids.push_back(FollowBoid(getAnimationSystem().getRandomBoidDisplayList(),
+                getAnimationSystem().getRandomBoidGoingUp(),
+                boid->getRelativePosition() + directions[dir],
+                boid->speed, boid->direction, boid->up));
+
+        break;
+    }
+
+    // Calculate the middle position again.
+    updateMiddlePosition();
+}
+
+void Engine::removeRandomBoid() {
+    // Do not remove if the boids vector is empty.
+    if(!_boids.size())
+        return;
+
+    // Get the size of the boid vector, generate a random number mod it.
+    // Remove the random boid.
+    size_t size = _boids.size();
+    size_t boidToRemove = rand() % size;
+
+    // Get the iterator position of the boid to remove.
+    BoidVector::iterator it = _boids.begin();
+    for(size_t i = 0; i != boidToRemove; ++i, ++it)
+        if(it == _boids.end() - 1) // Sanity check.
+            break;
+
+    // Remove the boid.
+    _boids.erase(it);
+
+    // Calculate the middle position again.
+    updateMiddlePosition();
 }
 
 void Engine::errorEvent(int error, const char *description) {

@@ -28,7 +28,26 @@
 #ifndef SYSTEM_MOVEMENTSYSTEM_HPP
 #define SYSTEM_MOVEMENTSYSTEM_HPP
 
-class MovementSystem {
+#include "System.hpp"
+#include "../glfw.hpp"
+
+class MovementSystem : public System {
+    // Update the objective boid's speed.
+    void updateObjectiveBoidSpeed(float dt);
+
+    // Update the objective boid's direction.
+    void updateObjectiveBoidDirection(float dt);
+
+public:
+    void init();
+    void terminate();
+    void update(float dt);
+
+    /**
+     * Processes the direction of the objective boid.
+     **/
+    void keyEvent(GLFWwindow *window, int key, int scancode, int action,
+            int mods);
 
 };
 

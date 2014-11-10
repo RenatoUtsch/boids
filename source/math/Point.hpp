@@ -72,6 +72,15 @@ public:
 
     }
 
+    /**
+     * Calculates the distance between two points.
+     **/
+    static float distance(const Point &p1, const Point &p2) {
+        return std::sqrt(std::pow(p1.x - p2.x, 2)
+                + std::pow(p1.y - p2.y, 2)
+                + std::pow(p1.z - p2.z, 2));
+    }
+
     /// += operator for point-vector addition.
     Point &operator+=(const Vector &right) {
         this->x += right.x;

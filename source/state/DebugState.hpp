@@ -25,21 +25,29 @@
  * THE SOFTWARE.
  */
 
-#ifndef STATE_RUNSTATE_HPP
-#define STATE_RUNSTATE_HPP
+#ifndef STATE_DEBUGSTATE_HPP
+#define STATE_DEBUGSTATE_HPP
 
 #include "../Engine.hpp"
 #include "State.hpp"
 #include "../glfw.hpp"
+#include "../defs.hpp"
 
 /**
- * Run state is the normal state of execution in the game.
+ * Debug state is a paused state that allows stepping and movement with the
+ * camera.
  **/
-class RunState : public State {
+class DebugState : public State {
+    // If is to step.
+    bool _step;
 
 public:
+    DebugState() : _step(false) {
+
+    }
+
     StateId getId() {
-        return RunStateId;
+        return DebugStateId;
     }
 
     void load() { }
@@ -57,11 +65,36 @@ public:
     }
 
     void update(float dt) {
-        // Update the systems.
-        getEngine().getAnimationSystem().update(dt);
         getEngine().getCameraSystem().update(dt);
-        getEngine().getCollisionSystem().update(dt);
-        getEngine().getMovementSystem().update(dt);
+
+        if(_step) {
+            _step = false;
+
+            // Print the objective boid.
+            std::cout << "Objective - pos: "
+                << getEngine().getObjectiveBoid().position << " | dir: "
+                << getEngine().getObjectiveBoid().direction << " | speed: "
+                << getEngine().getObjectiveBoid().speed << " | up: "
+                << getEngine().getObjectiveBoid().up << std::endl;
+
+            // Print the boids.
+            int i = 0;
+            Engine::BoidVector &boids = getEngine().getBoids();
+            for(Engine::BoidVector::iterator it = boids.begin();
+                    it != boids.end(); ++it, ++i) {
+                std::cout << "Boid " << i << " - pos: " << it->position
+                    << " | dir: " << it->direction << " | speed: " << it->speed
+                    << " | up: " << it->up << std::endl;
+            }
+
+            // One more line.
+            std::cout << std::endl;
+
+            // Update the systems.
+            getEngine().getAnimationSystem().update(dt);
+            getEngine().getCollisionSystem().update(dt);
+            getEngine().getMovementSystem().update(dt);
+        }
     }
 
     void render(float alpha) {
@@ -111,13 +144,19 @@ public:
             int mods) {
         if(action == GLFW_PRESS) {
             switch(button) {
+                case StepMouseButton:
+                    // Step.
+                    _step = true;
+                    break;
+
                 case DebugMouseButton:
-                    // Go to debug state.
-                    getEngine().getStateManager().changeState(DebugStateId);
+                    // Get out of the debug state.
+                    getEngine().getStateManager().changeState(RunStateId);
                     break;
             }
         }
     }
+
 };
 
-#endif // !STATE_RUNSTATE_HPP
+#endif // !STATE_DEBUGSTATE_HPP

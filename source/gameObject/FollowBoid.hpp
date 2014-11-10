@@ -25,50 +25,31 @@
  * THE SOFTWARE.
  */
 
-#ifndef GAMEOBJECT_BOID_HPP
-#define GAMEOBJECT_BOID_HPP
+#ifndef GAMEOBJECT_FOLLOWBOID_HPP
+#define GAMEOBJECT_FOLLOWBOID_HPP
 
-#include "GameObject.hpp"
+#include "Boid.hpp"
 
 /**
- * The data that represents a boid.
+ * A boid that follows the objective boid.
  **/
-struct Boid : public GameObject {
-    /// If the display lists are going up or down.
-    bool displayListGoingUp;
+struct FollowBoid : public Boid {
 
     /**
      * Constructor.
-     * Creates a boid at the given position and velocity.
-     * @param _displayList The initial display list of the boid.
-     * @param _displayListGoingUp If the display lists are being incremented or
-     * @param _position The position of the boid.
-     * @param _speed The speed in the boid's direction.
-     * @param _direction The direction of the boid.
-     * @param _up Up vector of the boid. Defaults to (0.0, 1.0, 0.0).
-     * decremented.
+     * Creates the boid with the given position (relative to the objective boid).
+     * The objective boid must already have been created.
      **/
-    Boid(unsigned _displayList, bool _displayListGoingUp,
+    FollowBoid(unsigned _displayList, bool _displayListGoingUp,
             Point _position, float _speed,
             Vector _direction, Vector _up = Vector(0.0, 1.0, 0.0))
-        : GameObject(_displayList, _position, _speed, _direction, _up),
-        displayListGoingUp(_displayListGoingUp) {
+        : Boid(_displayList, _displayListGoingUp, _position, _speed,
+                _direction, _up) {
 
     }
 
-    virtual ~Boid() { }
-
-    /**
-     * Returns the absolute position (not relative to any other boid) of this
-     * boid.
-     **/
-    virtual Point getAbsolutePosition() const = 0;
-
-    /**
-     * Returns the position of the boid with relation to the objective
-     * boid. If the boid is the objective boid, this returns (0.0, 0.0, 0.0).
-     **/
-    virtual Point getRelativePosition() const = 0;
+    Point getAbsolutePosition() const;
+    Point getRelativePosition() const;
 };
 
-#endif // !GAMEOBJECT_BOID_HPP
+#endif // !GAMEOBJECT_FOLLOWBOID_HPP

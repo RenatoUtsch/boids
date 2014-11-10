@@ -29,6 +29,8 @@
 #include "State.hpp"
 #include "IdleState.hpp"
 #include "RunState.hpp"
+#include "PauseState.hpp"
+#include "DebugState.hpp"
 
 State *stateFactory(StateId id) {
     // Go through each StateId and create the object related to it.
@@ -38,10 +40,10 @@ State *stateFactory(StateId id) {
         case RunStateId:
             return new RunState;
         case PauseStateId:
-            return NULL;
-            //return new PauseState;
+            return new PauseState;
         case DebugStateId:
-            return NULL;
-            //return new DebugState;
+            return new DebugState;
     }
+
+    return NULL;
 }

@@ -25,22 +25,18 @@
  * THE SOFTWARE.
  */
 
-#ifndef SYSTEM_COLLISIONSYSTEM_HPP
-#define SYSTEM_COLLISIONSYSTEM_HPP
+#include "FollowBoid.hpp"
+#include "../Engine.hpp"
 
-#include "System.hpp"
 
-class CollisionSystem : public System {
+Point FollowBoid::getAbsolutePosition() const {
+    Point abs = getEngine().getObjectiveBoid().position;
+    abs.x += position.x;
+    abs.y += position.y;
+    abs.z += position.z;
+    return abs;
+}
 
-    /**
-     * Calculates the collision between follow boids.
-     **/
-    void calculateCollisionBetweenBoids();
-
-public:
-    void init();
-    void terminate();
-    void update(float dt);
-};
-
-#endif // !SYSTEM_COLLISIONSYSTEM_HPP
+Point FollowBoid::getRelativePosition() const {
+    return position;
+}

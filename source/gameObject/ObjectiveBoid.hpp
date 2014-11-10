@@ -25,50 +25,57 @@
  * THE SOFTWARE.
  */
 
-#ifndef GAMEOBJECT_BOID_HPP
-#define GAMEOBJECT_BOID_HPP
+#ifndef GAMEOBJECT_OBJECTIVEBOID_HPP
+#define GAMEOBJECT_OBJECTIVEBOID_HPP
 
-#include "GameObject.hpp"
+#include "Boid.hpp"
+#include "../defs.hpp"
 
 /**
- * The data that represents a boid.
+ * The data that represents the objective boid.
  **/
-struct Boid : public GameObject {
-    /// If the display lists are going up or down.
-    bool displayListGoingUp;
+struct ObjectiveBoid : public Boid {
+    /// Right direction.
+    Vector right;
+
+    /// Horizontal angle of the boid.
+    float horizontalAngle;
+
+    /// Vertical angle of the boid.
+    float verticalAngle;
+
+    /// Sensitivity of the boid to the keys.
+    float keySensitivity;
 
     /**
      * Constructor.
-     * Creates a boid at the given position and velocity.
-     * @param _displayList The initial display list of the boid.
-     * @param _displayListGoingUp If the display lists are being incremented or
-     * @param _position The position of the boid.
-     * @param _speed The speed in the boid's direction.
-     * @param _direction The direction of the boid.
-     * @param _up Up vector of the boid. Defaults to (0.0, 1.0, 0.0).
-     * decremented.
+     * Creates the objective boid at the given position and velocity.
      **/
-    Boid(unsigned _displayList, bool _displayListGoingUp,
+    ObjectiveBoid(unsigned _displayList, bool _displayListGoingUp,
             Point _position, float _speed,
             Vector _direction, Vector _up = Vector(0.0, 1.0, 0.0))
-        : GameObject(_displayList, _position, _speed, _direction, _up),
-        displayListGoingUp(_displayListGoingUp) {
+            : Boid(_displayList, _displayListGoingUp, _position, _speed,
+                    _direction, _up),
+            keySensitivity(DefaultObjectiveBoidKeySensitivity) {
+        // Convert the direction to angles.
+        direction.normalize();
+        float vertRads = asin(-direction.y);
+        verticalAngle = toDegrees(vertRads);
+        horizontalAngle = toDegrees(acos(-direction.z / cos(vertRads)));
 
+        // Update the right direction.
+        right.x = cos(toRads(horizontalAngle));
+        right.y = 0.0;
+        right.z = sin(toRads(horizontalAngle));
     }
 
-    virtual ~Boid() { }
+    Point getAbsolutePosition() const {
+        return position;
+    }
 
-    /**
-     * Returns the absolute position (not relative to any other boid) of this
-     * boid.
-     **/
-    virtual Point getAbsolutePosition() const = 0;
-
-    /**
-     * Returns the position of the boid with relation to the objective
-     * boid. If the boid is the objective boid, this returns (0.0, 0.0, 0.0).
-     **/
-    virtual Point getRelativePosition() const = 0;
+    Point getRelativePosition() const {
+        return Point();
+    }
 };
 
-#endif // !GAMEOBJECT_BOID_HPP
+#endif // !GAMEOBJECT_OBJECTIVEBOID_HPP

@@ -45,7 +45,8 @@ void util::drawCircle(float radius) {
     glEnd();
 }
 
-void util::drawPyramid(float height, float diagonalSize, float diagonalAngle) {
+void util::drawPyramid(float height, float topX, float topY, float diagonalSize,
+        float diagonalAngle) {
     // Calculate the division of the diagonal size by 2.
     float diagonalSizeBy2 = diagonalSize / 2.0;
 
@@ -68,7 +69,7 @@ void util::drawPyramid(float height, float diagonalSize, float diagonalAngle) {
     glEnd();
 
     // Points
-    Point p0 = Point(0.0, 0.0, -height);
+    Point p0 = Point(topX, topY, -height);
     Point p1 = Point(-diagonalSizeX, diagonalSizeY, 0.0);
     Point p2 = Point(-diagonalSizeX, -diagonalSizeY, 0.0);
     Point p3 = Point(diagonalSizeX, -diagonalSizeY, 0.0);

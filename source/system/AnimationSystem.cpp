@@ -71,8 +71,8 @@ void AnimationSystem::createBoidDisplayList() {
                 // Put the wing at the most down angle.
                 glRotatef(-WingAngle / 2.0, 1.0, 0.0, 0.0);
 
-                util::drawPyramid(BoidWingHeight, BoidWingBaseDiagonalSize,
-                        BoidWingBaseAngle);
+                util::drawPyramid(BoidWingHeight, BoidWingTopX, BoidWingTopY,
+                        BoidWingBaseDiagonalSize, BoidWingBaseAngle);
             glPopMatrix();
 
             // Draw the right wing.
@@ -87,7 +87,8 @@ void AnimationSystem::createBoidDisplayList() {
                 // Put the wing at the most down angle.
                 glRotatef(-WingAngle / 2.0, 1.0, 0.0, 0.0);
 
-                util::drawPyramid(BoidWingHeight, BoidWingBaseDiagonalSize,
+                util::drawPyramid(BoidWingHeight, -BoidWingTopX, -BoidWingTopY,
+                        BoidWingBaseDiagonalSize,
                         BoidWingBaseAngle);
             glPopMatrix();
         glEndList();

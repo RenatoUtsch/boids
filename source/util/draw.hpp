@@ -43,10 +43,13 @@ namespace util {
      * Draws a pyramid with its base centered at (0, 0, 0) and pointed in the
      * -z direction. The base is, then, in the xy plane with z = 0.
      * @param height The height of the pyramid.
+     * @param topX X value of the top of the pyramid.
+     * @param topY Y value of the top of the pyramid.
      * @param diagonalSize The size of the diagonal of the base.
      * @param diagonalAngle The angle between the top and bottom diagonals.
      **/
-    void drawPyramid(float height, float diagonalSize, float diagonalAngle);
+    void drawPyramid(float height, float topX, float topY, float diagonalSize,
+            float diagonalAngle);
 }
 
 #endif // !UTIL_DRAW_HPP

@@ -25,21 +25,21 @@
  * THE SOFTWARE.
  */
 
-#ifndef STATE_RUNSTATE_HPP
-#define STATE_RUNSTATE_HPP
+#ifndef STATE_PAUSESTATE_HPP
+#define STATE_PAUSESTATE_HPP
 
 #include "../Engine.hpp"
 #include "State.hpp"
 #include "../glfw.hpp"
 
 /**
- * Run state is the normal state of execution in the game.
+ * Pause state pauses everything - not even the camera can move.
  **/
-class RunState : public State {
+class PauseState : public State {
 
 public:
     StateId getId() {
-        return RunStateId;
+        return PauseStateId;
     }
 
     void load() { }
@@ -56,13 +56,7 @@ public:
         glfwPollEvents();
     }
 
-    void update(float dt) {
-        // Update the systems.
-        getEngine().getAnimationSystem().update(dt);
-        getEngine().getCameraSystem().update(dt);
-        getEngine().getCollisionSystem().update(dt);
-        getEngine().getMovementSystem().update(dt);
-    }
+    void update(float dt) { }
 
     void render(float alpha) {
         getEngine().getRenderSystem().update(alpha);
@@ -81,31 +75,14 @@ public:
                     break;
 
                 case PauseKey:
-                    // Go to pause state.
-                    getEngine().getStateManager().changeState(PauseStateId);
-                    break;
-
-                case AddBoidKey:
-                    // Add a new boid.
-                    getEngine().addBoid();
-                    break;
-
-                case RemoveBoidKey:
-                    // Remove a random boid.
-                    getEngine().removeRandomBoid();
+                    // Unpause the game.
+                    getEngine().getStateManager().changeState(RunStateId);
                     break;
             }
         }
-
-        // Let the camera system process its camera movement.
-        getEngine().getCameraSystem().keyEvent(window, key, scancode, action,
-                mods);
     }
 
-    void cursorPosEvent(GLFWwindow *window, double xpos, double ypos) {
-        // Let the camera system process its camera orientation.
-        getEngine().getCameraSystem().cursorPosEvent(window, xpos, ypos);
-    }
+    void cursorPosEvent(GLFWwindow *window, double xpos, double ypos) { }
 
     void mouseButtonEvent(GLFWwindow *window, int button, int action,
             int mods) {
@@ -120,4 +97,4 @@ public:
     }
 };
 
-#endif // !STATE_RUNSTATE_HPP
+#endif // !STATE_PAUSESTATE_HPP

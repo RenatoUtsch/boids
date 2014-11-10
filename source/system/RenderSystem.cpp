@@ -174,29 +174,29 @@ void RenderSystem::update(float dt) {
     glCallList(getEngine().getTower().displayList);
 
     // Draw the objective boid.
-    glPushMatrix();
-        // Objective boid color.
-        glColor4f(BoidColorRed, BoidColorGreen, BoidColorBlue,
-                ObjectiveBoidTransparency);
 
-        // Translate the objective boid.
-        glext::glTranslatep(getEngine().getObjectiveBoid().position);
+    // Objective boid color.
+    glColor3f(ObjectiveBoidColorRed, ObjectiveBoidColorGreen,
+            ObjectiveBoidColorBlue);
 
-        // Rotate the objective boid.
-        glext::glMultMatrixm(Vector::toRotationMatrix(
-                getEngine().getObjectiveBoid().direction,
-                getEngine().getObjectiveBoid().up));
+    // Translate the objective boid.
+    glext::glTranslatep(getEngine().getObjectiveBoid().position);
 
-        glCallList(getEngine().getObjectiveBoid().displayList);
-    glPopMatrix();
+    // Rotate the objective boid.
+    glext::glMultMatrixm(Vector::toRotationMatrix(
+            getEngine().getObjectiveBoid().direction,
+            getEngine().getObjectiveBoid().up));
 
-    // Boid color.
+    glCallList(getEngine().getObjectiveBoid().displayList);
+
+    // Draw the boids. Their position is relative to the objective boid.
     glColor3f(BoidColorRed, BoidColorGreen, BoidColorBlue);
-
-    // Draw the boids.
     for(Engine::BoidVector::iterator it = getEngine().getBoids().begin();
             it != getEngine().getBoids().end(); ++it) {
-        //glCallList(it->displayList);
+        glPushMatrix();
+            glext::glTranslatep(it->position);
+            glCallList(it->displayList);
+        glPopMatrix();
     }
 
     // Swap the buffers.

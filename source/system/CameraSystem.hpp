@@ -47,8 +47,8 @@ public:
         /// Camera parallel to the ground and at a fixed distance of the boids.
         ParallelCamera,
 
-        /// Camera at a fixed distance of the boids.
-        FixedDistanceCamera
+        /// Camera positioned behind the boids.
+        BehindCamera
     };
 
 private:
@@ -85,18 +85,6 @@ private:
     /// If the current camera is orientable.
     bool _cameraOrientable;
 
-    /// If the forward key is being pressed.
-    bool _holdingForward;
-
-    /// If the backward key is being pressed.
-    bool _holdingBackward;
-
-    /// If the left strafe key is being pressed.
-    bool _holdingLeftStrafe;
-
-    /// If the right strafe key is being pressed.
-    bool _holdingRightStrafe;
-
     /**
      * orients the camera in the boids direction.
      **/
@@ -106,6 +94,16 @@ private:
       * Position the camera behind the boids.
       **/
      void positionCameraBehindTheBoids();
+
+     /**
+      * Position the camera at the left of the boids.
+      **/
+     void positionCameraLeftTheBoids();
+
+     /**
+      * Calculates the _direction, _right and _up vectors from the angles.
+      **/
+    void calculateDirectionVectors();
 
      /**
       * Moves the camera.

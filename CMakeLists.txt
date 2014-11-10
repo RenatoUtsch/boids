@@ -76,6 +76,7 @@ endif()
 # Boids sources
 set( BOIDS_SOURCE_FILES "${BOIDS_SOURCE_DIR}/source/Engine.cpp"
                         "${BOIDS_SOURCE_DIR}/source/main.cpp"
+                        "${BOIDS_SOURCE_DIR}/source/gameObject/FollowBoid.cpp"
                         "${BOIDS_SOURCE_DIR}/source/state/StateFactory.cpp"
                         "${BOIDS_SOURCE_DIR}/source/system/AnimationSystem.cpp"
                         "${BOIDS_SOURCE_DIR}/source/system/CameraSystem.cpp"
