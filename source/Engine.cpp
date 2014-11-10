@@ -243,7 +243,9 @@ void Engine::addBoid() {
     const float boidSpace2 = 2 * BoidSpace;
     const int objectiveVectors = 9; // Number of vectors that can be used with obj.
     const int followVectors = 13; // Number of vectors that can be used with follow.
+    bool isObjectiveBoid = true;
 
+/*
     Vector directions[] = {
         // Used also by obj when inserting a new boid relative to
         // obj (objectiveBoid).
@@ -263,7 +265,7 @@ void Engine::addBoid() {
         Vector(-boidSpace2, boidSpace2,     0.0),
         Vector(boidSpace2,  boidSpace2,     0.0)
     };
-
+*/
     // Number of existing boids.
     size_t num = _boids.size();
 
@@ -280,20 +282,23 @@ void Engine::addBoid() {
             if(boidId < num) {
                 boid = &_boids[boidId];
                 numVectors = followVectors;
+                isObjectiveBoid = false;
             }
         }
 
         // Choose a random direction.
-        size_t dir = rand() % numVectors;
-        /*
+        //size_t dir = rand() % numVectors;
         Vector direction = Vector(rand() % 1000, rand() % 1000, rand() % 1000);
         direction.normalize();
         direction *= boidSpace2;
-        */
 
         // Get the new position.
-        Point pos = boid->getRelativePosition() + directions[dir];
-        //Point pos = boid->getRelativePosition() - direction - boid->direction * BoidSpace;
+        //Point pos = boid->getRelativePosition() + directions[dir];
+        Point pos;
+        if(isObjectiveBoid)
+            pos = boid->getRelativePosition() - direction - boid->direction * BoidSpace;
+        else
+            pos = boid->getRelativePosition() - direction;
 
         // Check the distances to all the other boids. If we find a boid
         // that is at a distance smaller tan boidSpace2 from pos, try again.
