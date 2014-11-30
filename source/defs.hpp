@@ -239,7 +239,7 @@ const float BackgroundColorBlue = 0.98;
 const float GroundLevel = 0.0;
 
 /// How far on the Z-Axis and X-Axis the ground extends.
-const float GroundSize = 1000.0;
+const float GroundSize = 2000.0;
 
 /// The size of the squares.
 const float GroundSquareSize = 20.0;
